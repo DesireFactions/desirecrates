@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.desiremc.crates</groupId>
+	<artifactId>DesireCrates</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<dependencies>
+		<!-- Desire Core -->
+		<dependency>
+			<groupId>com.desiremc</groupId>
+			<artifactId>desirecore</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- Holographic Displays -->
+		<dependency>
+			<groupId>com.gmail.filoghost</groupId>
+			<artifactId>holographic-displays-api</artifactId>
+			<version>2.1.7</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/HolographicDisplaysAPI.jar</systemPath>
+		</dependency>
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>destroystokyo-repo</id>
+			<url>https://repo.destroystokyo.com/repository/maven-snapshots/</url>
+		</repository>
+	</repositories>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

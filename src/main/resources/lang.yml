@@ -1,0 +1,5 @@
+key:
+  defaults:
+    name: '&b{crate} Key'
+    lore:
+      - '&7Right-click {crate} crate to use!'
