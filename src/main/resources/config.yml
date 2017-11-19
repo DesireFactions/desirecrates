@@ -1,0 +1,6 @@
+key:
+  defaults:
+    name: '&b{crate} Key'
+    glow: true
+    lore:
+    - '&7Right-click {crate} crate to use!'

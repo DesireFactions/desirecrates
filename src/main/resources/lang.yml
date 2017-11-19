@@ -1,5 +1,5 @@
-key:
-  defaults:
-    name: '&b{crate} Key'
-    lore:
-      - '&7Right-click {crate} crate to use!'
+used_name: '&7That name is already used.'
+not_found: '&7Could not find crate.'
+create: '&7Created crate {crate}.'
+delete: '&7Deleted crate {crate}.'
+restore: '&7Restored crate {crate}.'

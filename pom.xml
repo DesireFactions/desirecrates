@@ -1,14 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.desiremc.crates</groupId>
 	<artifactId>DesireCrates</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<!-- Desire Core -->
 		<dependency>
 			<groupId>com.desiremc</groupId>
-			<artifactId>desirecore</artifactId>
+			<artifactId>DesireCore</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- Holographic Displays -->
@@ -20,12 +24,6 @@
 			<systemPath>${basedir}/lib/HolographicDisplaysAPI.jar</systemPath>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>destroystokyo-repo</id>
-			<url>https://repo.destroystokyo.com/repository/maven-snapshots/</url>
-		</repository>
-	</repositories>
 	<build>
 		<plugins>
 			<plugin>

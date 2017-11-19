@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
 import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Transient;
 
 @Embedded
 public class Reward
@@ -19,10 +20,18 @@ public class Reward
     private ItemStack item;
 
     private List<String> commands;
+    
+    @Transient
+    private Crate crate;
 
     public Reward()
     {
         commands = new ArrayList<>();
+    }
+    
+    protected void setCrate(Crate crate)
+    {
+        this.crate = crate;
     }
 
     /**

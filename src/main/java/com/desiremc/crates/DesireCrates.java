@@ -18,7 +18,7 @@ public class DesireCrates extends JavaPlugin
     public void onEnable()
     {
         instance = this;
-        
+
         loadConfig();
         loadLang();
 
@@ -57,10 +57,15 @@ public class DesireCrates extends JavaPlugin
     {
         return langHandler;
     }
-    
+
     public static FileHandler getConfigHandler()
     {
         return configHandler;
     }
-    
+
+    public static DesireCrates getInstance()
+    {
+        return instance;
+    }
+
 }

@@ -43,12 +43,13 @@ public class Key
         this.crate = crate;
     }
 
-    protected void assignDefaults(Crate crate)
+    protected Key assignDefaults(Crate crate)
     {
         material = Material.TRIPWIRE_HOOK;
-        name = DesireCrates.getLangHandler().getStringNoPrefix("key.defaults.name");
-        lore = DesireCrates.getLangHandler().getStringList("key.defaults.lore");
-        enchanted = DesireCrates.getLangHandler().getBoolean("key.defualts.glow");
+        name = DesireCrates.getConfigHandler().getString("key.defaults.name");
+        lore = DesireCrates.getConfigHandler().getStringList("key.defaults.lore");
+        enchanted = DesireCrates.getConfigHandler().getBoolean("key.defualts.glow");
+        return this;
     }
 
     public ItemStack getItem()
