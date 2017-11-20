@@ -1,12 +1,19 @@
 package com.desiremc.crates.data;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.mongodb.morphia.annotations.Converters;
@@ -22,6 +29,8 @@ import org.mongodb.morphia.annotations.Transient;
 
 import com.desiremc.core.api.LocationTypeConverter;
 import com.desiremc.crates.DesireCrates;
+import com.desiremc.crates.data.Reward.RewardType;
+import com.desiremc.crates.gui.PreviewDisplay;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 
@@ -50,27 +59,30 @@ public class Crate
 
     private List<Location> locations;
 
+    private Map<UUID, Integer> pendingKeys;
+
     @Embedded
-    private List<Reward> rewards;
+    private LinkedList<Reward> rewards;
 
     @Embedded
     private Key key;
 
     @Transient
-    private double totalPercent;
-
-    @Transient
-    private List<Hologram> holograms;
+    private Map<Location, Hologram> holograms;
 
     @Transient
     private ItemStack item;
 
+    @Transient
+    private PreviewDisplay previewDisplay;
+
     public Crate()
     {
         hologramLines = new LinkedList<>();
-        rewards = new LinkedList<>();
-        holograms = new LinkedList<>();
         locations = new LinkedList<>();
+        pendingKeys = new HashMap<>();
+        rewards = new LinkedList<>();
+        holograms = new HashMap<>();
     }
 
     protected void assignDefaults(String name)
@@ -120,12 +132,12 @@ public class Crate
             // generate the holograms
             try
             {
-                Hologram hologram = HologramsAPI.createHologram(DesireCrates.getInstance(), loc.add(0.5, 0.5, 0.5));
+                Hologram hologram = HologramsAPI.createHologram(DesireCrates.getInstance(), loc.clone().add(0.5, 0.5, 0.5));
                 for (String line : hologramLines)
                 {
                     hologram.appendTextLine(line);
                 }
-                holograms.add(hologram);
+                holograms.put(loc, hologram);
             }
             catch (Exception ex)
             {
@@ -134,19 +146,10 @@ public class Crate
         }
     }
 
-    protected void loadRewards()
-    {
-        // calculate the total percent
-        for (Reward reward : getRewards())
-        {
-            totalPercent += reward.getChance();
-        }
-    }
-
     protected void unloadHolograms()
     {
         // delete all existing holograms
-        for (Hologram holo : holograms)
+        for (Hologram holo : holograms.values())
         {
             holo.delete();
         }
@@ -261,22 +264,6 @@ public class Crate
     }
 
     /**
-     * @return the totalPercent
-     */
-    public double getTotalPercent()
-    {
-        return totalPercent;
-    }
-
-    /**
-     * @param totalPercent the totalPercent to set
-     */
-    public void setTotalPercent(double totalPercent)
-    {
-        this.totalPercent = totalPercent;
-    }
-
-    /**
      * Adds a line to the holograms for the crates. This saves it to the database as well as adds it to currently loaded
      * holograms
      * 
@@ -286,7 +273,7 @@ public class Crate
     {
         hologramLines.add(line);
         CrateHandler.saveCrate(this);
-        for (Hologram holo : holograms)
+        for (Hologram holo : holograms.values())
         {
             holo.appendTextLine(line);
         }
@@ -303,9 +290,9 @@ public class Crate
     /**
      * @return the holograms
      */
-    public List<Hologram> getHolograms()
+    public Collection<Hologram> getHolograms()
     {
-        return holograms;
+        return holograms.values();
     }
 
     /**
@@ -339,7 +326,97 @@ public class Crate
         {
             hologram.appendTextLine(line);
         }
-        holograms.add(hologram);
+        holograms.put(block.getLocation(), hologram);
         CrateHandler.saveCrate(this);
+    }
+
+    /**
+     * Remove a location from the Crate. This will also despawn the holograms and any other effects associated with this
+     * crate.
+     * 
+     * @param block the block of the crate to be broken.
+     */
+    public void removeLocation(Block block)
+    {
+        locations.remove(block.getLocation());
+        Hologram holo = holograms.get(block.getLocation());
+        holo.delete();
+        CrateHandler.deleteCrate(this);
+    }
+
+    /**
+     * This will generate the preview display if it had not been previously generated.
+     * 
+     * @return the preview
+     */
+    public PreviewDisplay getPreviewDisplay()
+    {
+        if (previewDisplay == null)
+        {
+            previewDisplay = new PreviewDisplay(this);
+        }
+        return previewDisplay;
+    }
+
+    public void open(Player player)
+    {
+        Reward reward = getRandomReward();
+        if (firework)
+        {
+            // TODO spawn firework
+        }
+        if (broadcast)
+        {
+            // TODO broadcast message
+            Bukkit.broadcastMessage("Yaaaay he won");
+        }
+        if (reward.getType() == RewardType.COMMAND)
+        {
+            for (String str : reward.getCommands())
+            {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/" + str);
+            }
+        }
+        else
+        {
+            player.getInventory().addItem(reward.getItem());
+        }
+    }
+
+    private Reward getRandomReward()
+    {
+        double weight = 0;
+        for (Reward reward : rewards)
+        {
+            weight += reward.getChance();
+        }
+        double value = new Random().nextDouble() * weight;
+        for (Reward reward : rewards)
+        {
+            value -= reward.getChance();
+            if (value <= 0)
+            {
+                return reward;
+            }
+        }
+        return rewards.peekLast();
+    }
+
+    public void addPendingKeys(UUID uuid, int amount)
+    {
+        Integer val = pendingKeys.get(uuid);
+        if (val != null)
+        {
+            pendingKeys.put(uuid, val + amount);
+        }
+        else
+        {
+            pendingKeys.put(uuid, amount);
+        }
+    }
+    
+    public int getPendingKeys(UUID uuid)
+    {
+        return pendingKeys.get(uuid);
     }
 }

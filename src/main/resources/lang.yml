@@ -1,11 +1,16 @@
+prefix: 
+  text: '&6[&3DesireCrates&6]'
+  use: true
 used_name: '&7That name is already used.'
 not_found: '&7Could not find crate.'
 create: '&7Created crate {crate}.'
 delete: '&7Deleted crate {crate}.'
 restore: '&7Restored crate {crate}.'
 no_drop: '&7You can''t get rid of crates without /ci.'
+need_key: '&7You don''t have a {crate} key.'
 item: '&7You have been given a {crate} block.'
 breaking:
   enable: '&7You have enabled crate breaking.'
   disable: '&7You have disabled crate breaking.'
   expire: '&7Your breaking timer has expired.'
+  break: '&7You have broken that crate.'

@@ -72,6 +72,10 @@ public class Key
 
     public boolean isKey(ItemStack item)
     {
+        if (item == null || item.getType() != getItem().getType())
+        {
+            return false;
+        }
         NBTItem nbt = new NBTItem(item);
         return nbt.hasKey("crate_id") && nbt.getInteger("crate_id") == crate.getId();
 

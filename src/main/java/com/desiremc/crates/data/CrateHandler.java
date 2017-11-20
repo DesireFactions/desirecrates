@@ -121,7 +121,6 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
     {
         crates.put(crate.getId(), crate);
         crate.setActive(true);
-        crate.loadRewards();
         crate.loadLocations();
         saveCrate(crate);
     }
@@ -184,7 +183,6 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
                 {
                     getInstance().nextId = crate.getId();
                 }
-                crate.loadRewards();
                 crate.loadLocations();
             }
             getInstance().nextId++;
