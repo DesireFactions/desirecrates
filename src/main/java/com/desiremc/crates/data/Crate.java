@@ -2,8 +2,13 @@ package com.desiremc.crates.data;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.mongodb.morphia.annotations.Converters;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
@@ -57,6 +62,9 @@ public class Crate
     @Transient
     private List<Hologram> holograms;
 
+    @Transient
+    private ItemStack item;
+
     public Crate()
     {
         hologramLines = new LinkedList<>();
@@ -77,21 +85,67 @@ public class Crate
         this.key = new Key().assignDefaults(this);
     }
 
-    protected void loadHolograms()
+    protected void loadLocations()
     {
-        for (Location loc : getLocations())
+        // iterate over all the crates
+        ListIterator<Location> it = getLocations().listIterator();
+        while (it.hasNext())
         {
-            Hologram hologram = HologramsAPI.createHologram(DesireCrates.getInstance(), loc.add(0.5, 0.5, 0.5));
-            for (String line : hologramLines)
+            Location loc = it.next();
+
+            // check and apply the block data
+            try
             {
-                hologram.appendTextLine(line);
+                Block block = loc.getBlock();
+
+                // ensure the block is actually a chest
+                if (block != null && block.getType() == Material.CHEST)
+                {
+                    // if it is, set the metadata
+                    block.setMetadata(CrateHandler.META, new CrateMetadata(this));
+                }
+                else
+                {
+                    // if it isn't, remove the location
+                    it.remove();
+                    CrateHandler.saveCrate(this);
+                    continue;
+                }
             }
-            holograms.add(hologram);
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+
+            // generate the holograms
+            try
+            {
+                Hologram hologram = HologramsAPI.createHologram(DesireCrates.getInstance(), loc.add(0.5, 0.5, 0.5));
+                for (String line : hologramLines)
+                {
+                    hologram.appendTextLine(line);
+                }
+                holograms.add(hologram);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    protected void loadRewards()
+    {
+        // calculate the total percent
+        for (Reward reward : getRewards())
+        {
+            totalPercent += reward.getChance();
         }
     }
 
     protected void unloadHolograms()
     {
+        // delete all existing holograms
         for (Hologram holo : holograms)
         {
             holo.delete();
@@ -102,6 +156,18 @@ public class Crate
     public int getId()
     {
         return id;
+    }
+
+    public ItemStack getItem()
+    {
+        if (item == null)
+        {
+            item = new ItemStack(Material.CHEST);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(getName() + " Crate");
+            item.setItemMeta(meta);
+        }
+        return item.clone();
     }
 
     public boolean isActive()
@@ -211,6 +277,22 @@ public class Crate
     }
 
     /**
+     * Adds a line to the holograms for the crates. This saves it to the database as well as adds it to currently loaded
+     * holograms
+     * 
+     * @param line the text to add
+     */
+    public void addHologramLine(String line)
+    {
+        hologramLines.add(line);
+        CrateHandler.saveCrate(this);
+        for (Hologram holo : holograms)
+        {
+            holo.appendTextLine(line);
+        }
+    }
+
+    /**
      * @return the hologramLines
      */
     public List<String> getHologramLines()
@@ -232,6 +314,7 @@ public class Crate
     public void setKey(Key key)
     {
         this.key = key;
+        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -240,5 +323,23 @@ public class Crate
     public List<Location> getLocations()
     {
         return locations;
+    }
+
+    /**
+     * Add a new location to the Crate. This will also spawn in holograms and any other effects associated with this
+     * crate.
+     * 
+     * @param block the block for the new crate location.
+     */
+    public void addLocation(Block block)
+    {
+        locations.add(block.getLocation());
+        Hologram hologram = HologramsAPI.createHologram(DesireCrates.getInstance(), block.getLocation().add(0.5, 0.5, 0.5));
+        for (String line : hologramLines)
+        {
+            hologram.appendTextLine(line);
+        }
+        holograms.add(hologram);
+        CrateHandler.saveCrate(this);
     }
 }
