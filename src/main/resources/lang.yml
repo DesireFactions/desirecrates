@@ -1,6 +1,9 @@
-prefix: 
+prefix:
   text: '&6[&3DesireCrates&6]'
   use: true
+list:
+  header: '&c&m----------------------------'
+  text: '&b{crate}'
 used_name: '&7That name is already used.'
 not_found: '&7Could not find crate.'
 create: '&7Created crate {crate}.'
@@ -14,3 +17,14 @@ breaking:
   disable: '&7You have disabled crate breaking.'
   expire: '&7Your breaking timer has expired.'
   break: '&7You have broken that crate.'
+keys:
+  receive: '&7You have received &a{amount} &7{crate} keys. Use /keys claim to claim them.'
+  send: '&7You have sent &b{player} &a{amount} &7{crate} keys.'
+  check:
+    self:
+      none: '&7You have no pending {crate} keys.'
+      amount: '&7You have &a{amount} &7pending {crate} keys.'
+    others:
+      none: '&7{target} has no pending {crate} keys.'
+      amount: '&7{target} has &a{amount} &7pending {crate} keys.'
+  claim: '&7You have claimed &a{amount} &7{crate} keys.'
