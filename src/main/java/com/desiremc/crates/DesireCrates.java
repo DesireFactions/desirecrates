@@ -6,6 +6,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.desiremc.core.api.FileHandler;
 import com.desiremc.core.api.LangHandler;
+import com.desiremc.core.api.command.CustomCommandHandler;
+import com.desiremc.core.listeners.ListenerManager;
+import com.desiremc.crates.commands.CrateCommand;
+import com.desiremc.crates.listeners.BlockListener;
+import com.desiremc.crates.listeners.ConnectionListener;
+import com.desiremc.crates.listeners.InteractListener;
 
 public class DesireCrates extends JavaPlugin
 {
@@ -28,12 +34,16 @@ public class DesireCrates extends JavaPlugin
 
     private void registerListeners()
     {
-
+        ListenerManager listenerManager = ListenerManager.getInstace();
+        listenerManager.addListener(new BlockListener(), this);
+        listenerManager.addListener(new ConnectionListener(), this);
+        listenerManager.addListener(new InteractListener(), this);
     }
 
     private void registerCommands()
     {
-
+        CustomCommandHandler commandHandler = CustomCommandHandler.getInstance();
+        commandHandler.registerCommand(new CrateCommand(), this);
     }
 
     public static void loadConfig()

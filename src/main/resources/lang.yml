@@ -28,3 +28,5 @@ keys:
       none: '&7{target} has no pending {crate} keys.'
       amount: '&7{target} has &a{amount} &7pending {crate} keys.'
   claim: '&7You have claimed &a{amount} &7{crate} keys.'
+rewards:
+  already_exists: '&7A reward by that name already exists.'

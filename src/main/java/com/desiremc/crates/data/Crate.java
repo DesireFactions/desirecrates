@@ -161,6 +161,9 @@ public class Crate
         return id;
     }
 
+    /**
+     * @return the visual representation of this item.
+     */
     public ItemStack getItem()
     {
         if (item == null)
@@ -173,27 +176,45 @@ public class Crate
         return item.clone();
     }
 
+    /**
+     * @return if the crate is active.
+     */
     public boolean isActive()
     {
         return active;
     }
 
+    /**
+     * @param active whether or not the chest is active.
+     */
     public void setActive(boolean active)
     {
         this.active = active;
     }
 
+    /**
+     * @return the name of the chest.
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * @param name the new name of the crate
+     */
     public void setName(String name)
     {
         this.name = name;
         this.stub = name.toLowerCase();
     }
 
+    /**
+     * Gets the stub of the crate. Usually this is the lowercase version of the name, however it does not necessarily
+     * have to be.
+     * 
+     * @return the stub of the crate.
+     */
     public String getStub()
     {
         return stub;
@@ -253,6 +274,26 @@ public class Crate
     public List<Reward> getRewards()
     {
         return rewards;
+    }
+
+    public Reward getReward(String name)
+    {
+        for (Reward reward : getRewards())
+        {
+            if (reward.getName().equalsIgnoreCase(name))
+            {
+                return reward;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param reward the new reward to add.
+     */
+    public void addReward(Reward reward)
+    {
+        this.rewards.add(reward);
     }
 
     /**
@@ -358,6 +399,11 @@ public class Crate
         return previewDisplay;
     }
 
+    /**
+     * Run the entire process of this crate being opened by the specified player.
+     * 
+     * @param player the player opening the crate.
+     */
     public void open(Player player)
     {
         Reward reward = getRandomReward();
@@ -383,6 +429,11 @@ public class Crate
         }
     }
 
+    /**
+     * Goes through all the rewards and randomly picks one based on the given percentages.
+     * 
+     * @return the random reward.
+     */
     private Reward getRandomReward()
     {
         double weight = 0;
@@ -402,6 +453,14 @@ public class Crate
         return rewards.peekLast();
     }
 
+    /**
+     * Give keys to a player to be claimed whenever the player wants to. This allows for players to get keys when they
+     * are offline without them losing it, as well as ensuring we don't have to make sure they have an empty slot in
+     * their inventory.
+     * 
+     * @param uuid the player to give the keys to.
+     * @param amount the amount of keys.
+     */
     public void addPendingKeys(UUID uuid, int amount)
     {
         Integer val = pendingKeys.get(uuid);
@@ -414,7 +473,13 @@ public class Crate
             pendingKeys.put(uuid, amount);
         }
     }
-    
+
+    /**
+     * Gets how many keys a player has. If the player has none, it returns null.
+     * 
+     * @param uuid the player to check.
+     * @return the amount of pending keys the player has.
+     */
     public int getPendingKeys(UUID uuid)
     {
         return pendingKeys.get(uuid);
