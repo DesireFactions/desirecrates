@@ -4,3 +4,12 @@ key:
     glow: true
     lore:
     - '&7Right-click {crate} crate to use!'
+crates:
+  default:
+    firework: true
+    broadcast: false
+    knockback: 0.5
+    holograms:
+    - '§f{crate}'
+    - '§fRight-click with key to use'
+    - '§fLeft-click to preview'

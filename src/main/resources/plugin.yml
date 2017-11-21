@@ -1,3 +1,4 @@
 main: com.desiremc.crates.DesireCrates
 name: DesireCrates
 version: 0.1
+softdepend: [HolographicDisplays]

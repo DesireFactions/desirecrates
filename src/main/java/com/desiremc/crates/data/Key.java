@@ -46,8 +46,12 @@ public class Key
     protected Key assignDefaults(Crate crate)
     {
         material = Material.TRIPWIRE_HOOK;
-        name = DesireCrates.getConfigHandler().getString("key.defaults.name");
+        name = DesireCrates.getConfigHandler().getString("key.defaults.name").replace("{crate}", crate.getName());
         lore = DesireCrates.getConfigHandler().getStringList("key.defaults.lore");
+        for (int i = 0; i < lore.size(); i++)
+        {
+            lore.set(i, lore.get(i).replace("{crate}", crate.getName()));
+        }
         enchanted = DesireCrates.getConfigHandler().getBoolean("key.defualts.glow");
         return this;
     }

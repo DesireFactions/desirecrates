@@ -2,9 +2,9 @@ package com.desiremc.crates.commands;
 
 import org.bukkit.command.CommandSender;
 
-import com.desiremc.core.DesireCore;
 import com.desiremc.core.api.command.ValidCommand;
 import com.desiremc.core.session.Rank;
+import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Crate;
 import com.desiremc.crates.data.CrateHandler;
 
@@ -19,10 +19,10 @@ public class CrateListCommand extends ValidCommand
     @Override
     public void validRun(CommandSender sender, String label, Object... args)
     {
-        DesireCore.getLangHandler().sendRenderMessageNoPrefix(sender, "list.header");
+        DesireCrates.getLangHandler().sendRenderMessageNoPrefix(sender, "list.header");
         for (Crate crate : CrateHandler.getCrates())
         {
-            DesireCore.getLangHandler().sendRenderMessage(sender, "list.text",
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "list.text",
                     "{crate}", crate.getName());
         }
 

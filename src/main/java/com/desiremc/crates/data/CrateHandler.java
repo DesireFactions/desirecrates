@@ -66,7 +66,7 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
         {
             for (Crate crate : crates.values())
             {
-                if (item.getItemMeta().getDisplayName().matches(".{0,}" + crate.getName()))
+                if (item.getItemMeta().getDisplayName().matches(".{0,}" + crate.getName() + ".{0,}"))
                 {
                     return crate;
                 }
@@ -106,6 +106,7 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
         Crate crate = new Crate();
         crate.assignDefaults(name);
         getInstance().save(crate);
+        crates.put(crate.getId(), crate);
         return crate;
     }
 

@@ -20,6 +20,7 @@ public class CrateCommand extends ValidBaseCommand
         addSubCommand(new CrateBreakCommand());
         addSubCommand(new CrateDeleteCommand());
         addSubCommand(new CrateRestoreCommand());
+        addSubCommand(new CrateReloadCommand());
     }
 
 }

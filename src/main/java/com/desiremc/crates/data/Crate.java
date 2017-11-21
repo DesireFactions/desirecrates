@@ -28,6 +28,7 @@ import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.desiremc.core.api.LocationTypeConverter;
+import com.desiremc.core.utils.Utils;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Reward.RewardType;
 import com.desiremc.crates.gui.PreviewDisplay;
@@ -57,7 +58,7 @@ public class Crate
 
     private List<String> hologramLines;
 
-    private List<Location> locations;
+    private List<String> locations;
 
     private Map<UUID, Integer> pendingKeys;
 
@@ -75,6 +76,9 @@ public class Crate
 
     @Transient
     private PreviewDisplay previewDisplay;
+
+    @Transient
+    private List<Location> parsedLocations;
 
     public Crate()
     {
@@ -94,6 +98,10 @@ public class Crate
         this.broadcast = DesireCrates.getConfigHandler().getBoolean("crates.default.broadcast");
         this.knockback = DesireCrates.getConfigHandler().getDouble("crates.default.knockback");
         this.hologramLines = DesireCrates.getConfigHandler().getStringList("crates.default.holograms");
+        for (int i = 0; i < hologramLines.size(); i++)
+        {
+            hologramLines.set(i, hologramLines.get(i).replace("{crate}", getName()));
+        }
         this.key = new Key().assignDefaults(this);
     }
 
@@ -350,7 +358,15 @@ public class Crate
      */
     public List<Location> getLocations()
     {
-        return locations;
+        if (parsedLocations == null)
+        {
+            parsedLocations = new LinkedList<>();
+            for (String str : locations)
+            {
+                parsedLocations.add(Utils.toLocation(str));
+            }
+        }
+        return parsedLocations;
     }
 
     /**
@@ -361,13 +377,15 @@ public class Crate
      */
     public void addLocation(Block block)
     {
-        locations.add(block.getLocation());
+        getLocations().add(block.getLocation());
+        locations.add(Utils.toString(block.getLocation()));
         Hologram hologram = HologramsAPI.createHologram(DesireCrates.getInstance(), block.getLocation().add(0.5, 0.5, 0.5));
         for (String line : hologramLines)
         {
             hologram.appendTextLine(line);
         }
         holograms.put(block.getLocation(), hologram);
+        block.setMetadata(CrateHandler.META, new CrateMetadata(this));
         CrateHandler.saveCrate(this);
     }
 
@@ -379,9 +397,11 @@ public class Crate
      */
     public void removeLocation(Block block)
     {
-        locations.remove(block.getLocation());
+        getLocations().remove(block.getLocation());
+        locations.remove(Utils.toString(block.getLocation()));
         Hologram holo = holograms.get(block.getLocation());
         holo.delete();
+        block.removeMetadata(CrateHandler.META, DesireCrates.getInstance());
         CrateHandler.deleteCrate(this);
     }
 

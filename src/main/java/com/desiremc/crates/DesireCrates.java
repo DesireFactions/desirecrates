@@ -9,6 +9,7 @@ import com.desiremc.core.api.LangHandler;
 import com.desiremc.core.api.command.CustomCommandHandler;
 import com.desiremc.core.listeners.ListenerManager;
 import com.desiremc.crates.commands.CrateCommand;
+import com.desiremc.crates.data.CrateHandler;
 import com.desiremc.crates.listeners.BlockListener;
 import com.desiremc.crates.listeners.ConnectionListener;
 import com.desiremc.crates.listeners.InteractListener;
@@ -30,6 +31,8 @@ public class DesireCrates extends JavaPlugin
 
         registerListeners();
         registerCommands();
+        
+        CrateHandler.initialize();
     }
 
     private void registerListeners()
