@@ -47,6 +47,7 @@ public class InteractListener implements Listener
                         crate.getPreviewDisplay().openMenu(e.getPlayer());
                     }
                 }
+                e.setCancelled(true);
             }
         }
 

@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.desiremc.core.api.command.ValidCommand;
 import com.desiremc.core.parsers.DoubleParser;
+import com.desiremc.core.parsers.StringParser;
 import com.desiremc.core.session.Rank;
 import com.desiremc.core.validators.ItemInHandValidator;
 import com.desiremc.crates.data.Crate;
@@ -19,9 +20,10 @@ public class CrateRewardsAddItemCommand extends ValidCommand
 
     public CrateRewardsAddItemCommand()
     {
-        super("add", "Add a reward to the plugin.", Rank.ADMIN, new String[] { "crate", "name", "chance" });
+        super("item", "Add a reward to the plugin.", Rank.ADMIN, new String[] { "crate", "name", "chance" });
 
         addParser(new CrateParser(), "crate");
+        addParser(new StringParser(), "name");
         addParser(new DoubleParser(), "chance");
 
         addValidator(new ItemInHandValidator());

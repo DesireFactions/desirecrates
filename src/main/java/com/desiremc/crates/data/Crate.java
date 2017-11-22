@@ -17,7 +17,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.mongodb.morphia.annotations.Converters;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Field;
@@ -28,7 +27,6 @@ import org.mongodb.morphia.annotations.IndexOptions;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Transient;
 
-import com.desiremc.core.api.LocationTypeConverter;
 import com.desiremc.core.utils.Utils;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Reward.RewardType;
@@ -37,7 +35,6 @@ import com.desiremc.crates.gui.PreviewDisplay;
 import de.inventivegames.hologram.Hologram;
 import de.inventivegames.hologram.HologramAPI;
 
-@Converters(LocationTypeConverter.class)
 @Indexes(@Index(fields = @Field(value = "name"), options = @IndexOptions(unique = true)))
 @Entity(noClassnameStored = true, value = "crates")
 public class Crate
@@ -77,9 +74,6 @@ public class Crate
     private ItemStack item;
 
     @Transient
-    private PreviewDisplay previewDisplay;
-
-    @Transient
     private List<Location> parsedLocations;
 
     public Crate()
@@ -110,10 +104,9 @@ public class Crate
     protected void loadLocations()
     {
         // iterate over all the crates
-        ListIterator<Location> it = getLocations().listIterator();
-        while (it.hasNext())
+        for (Location loc : getLocations())
         {
-            Location loc = it.next();
+            boolean exit = false;
 
             // check and apply the block data
             try
@@ -129,9 +122,8 @@ public class Crate
                 else
                 {
                     // if it isn't, remove the location
-                    it.remove();
-                    CrateHandler.saveCrate(this);
-                    continue;
+                    Bukkit.getScheduler().runTask(DesireCrates.getInstance(), () -> removeLocation(block));
+                    exit = true;
                 }
             }
             catch (Exception ex)
@@ -139,32 +131,37 @@ public class Crate
                 ex.printStackTrace();
             }
 
-            // generate the holograms
-            try
+            if (!exit)
             {
-                Location clone = loc.clone();
-                clone.add(0.5, 1.75, 0.5);
-                Iterator<String> lines = hologramLines.iterator();
-                String line;
-                Hologram holo = null;
-                List<Hologram> holos = new LinkedList<>();
-                while ((line = lines.next()) != null)
+                // generate the holograms
+                try
                 {
-                    if (holo == null)
+                    Location clone = loc.clone();
+                    clone.add(0.5, 1.75, 0.5);
+                    Iterator<String> lines = hologramLines.iterator();
+                    String line;
+                    Hologram holo = null;
+                    List<Hologram> holos = new LinkedList<>();
+                    while (lines.hasNext())
                     {
-                        holo = HologramAPI.createHologram(clone, line);
+                        line = lines.next();
+                        if (holo == null)
+                        {
+                            holo = HologramAPI.createHologram(clone, line);
+                            holo.spawn();
+                        }
+                        else
+                        {
+                            holo = holo.addLineBelow(line);
+                        }
+                        holos.add(holo);
                     }
-                    else
-                    {
-                        holo = holo.addLineBelow(line);
-                    }
-                    holos.add(holo);
+                    holograms.put(loc, holos);
                 }
-                holograms.put(loc, holos);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -233,6 +230,7 @@ public class Crate
     {
         this.name = name;
         this.stub = name.toLowerCase();
+        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -260,6 +258,7 @@ public class Crate
     public void setFirework(boolean firework)
     {
         this.firework = firework;
+        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -276,6 +275,7 @@ public class Crate
     public void setBroadcast(boolean broadcast)
     {
         this.broadcast = broadcast;
+        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -320,6 +320,16 @@ public class Crate
     public void addReward(Reward reward)
     {
         this.rewards.add(reward);
+        CrateHandler.saveCrate(this);
+    }
+
+    /**
+     * @param reward the new reward to add.
+     */
+    public void removeReward(Reward reward)
+    {
+        this.rewards.remove(reward);
+        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -408,11 +418,13 @@ public class Crate
         String line;
         Hologram holo = null;
         List<Hologram> holos = new LinkedList<>();
-        while ((line = lines.next()) != null)
+        while (lines.hasNext())
         {
+            line = lines.next();
             if (holo == null)
             {
                 holo = HologramAPI.createHologram(clone, line);
+                holo.spawn();
             }
             else
             {
@@ -436,9 +448,18 @@ public class Crate
         getLocations().remove(block.getLocation());
         locations.remove(Utils.toString(block.getLocation()));
         List<Hologram> holo = holograms.get(block.getLocation());
-        holo.forEach(x -> x.despawn());
+        if (holo != null)
+        {
+            holo.forEach(x ->
+            {
+                if (x.isSpawned())
+                {
+                    x.despawn();
+                }
+            });
+        }
         block.removeMetadata(CrateHandler.META, DesireCrates.getInstance());
-        CrateHandler.deleteCrate(this);
+        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -448,10 +469,9 @@ public class Crate
      */
     public PreviewDisplay getPreviewDisplay()
     {
-        if (previewDisplay == null)
-        {
-            previewDisplay = new PreviewDisplay(this);
-        }
+
+        PreviewDisplay previewDisplay = new PreviewDisplay(this);
+        previewDisplay.populateItems();
         return previewDisplay;
     }
 
@@ -463,6 +483,10 @@ public class Crate
     public void open(Player player)
     {
         Reward reward = getRandomReward();
+        if (reward == null)
+        {
+            return;
+        }
         if (firework)
         {
             // TODO spawn firework
@@ -476,12 +500,26 @@ public class Crate
         {
             for (String str : reward.getCommands())
             {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/" + str);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), str);
             }
         }
         else
         {
             player.getInventory().addItem(reward.getItem());
+            player.updateInventory();
+        }
+        ItemStack item = player.getItemInHand();
+        if (item != null)
+        {
+            if (item.getAmount() == 1)
+            {
+                player.setItemInHand(null);
+            }
+            else
+            {
+                item.setAmount(item.getAmount() - 1);
+                player.setItemInHand(item);
+            }
         }
     }
 

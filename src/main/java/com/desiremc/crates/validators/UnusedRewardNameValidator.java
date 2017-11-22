@@ -23,7 +23,7 @@ public class UnusedRewardNameValidator extends CommandValidator
 
         if (crate.getReward(name) != null)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "reward.already_exists");
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.already_exists");
             return false;
         }
 

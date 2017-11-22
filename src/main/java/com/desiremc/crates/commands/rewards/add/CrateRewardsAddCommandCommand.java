@@ -12,6 +12,7 @@ import com.desiremc.core.parsers.StringParser;
 import com.desiremc.core.session.Rank;
 import com.desiremc.crates.data.Crate;
 import com.desiremc.crates.data.Reward;
+import com.desiremc.crates.data.Reward.RewardType;
 import com.desiremc.crates.parsers.CrateParser;
 import com.desiremc.crates.validators.UnusedRewardNameValidator;
 
@@ -44,9 +45,10 @@ public class CrateRewardsAddCommandCommand extends ValidCommand
         Reward reward = new Reward();
         reward.setChance(chance);
         reward.setName(name);
+        reward.setType(RewardType.COMMAND);
 
         ItemStack is;
-        if (sender instanceof Player && ((Player) sender).getItemInHand() != null)
+        if (sender instanceof Player && ((Player) sender).getItemInHand() != null && ((Player) sender).getItemInHand().getType() != Material.AIR)
         {
             is = ((Player) sender).getItemInHand();
         }

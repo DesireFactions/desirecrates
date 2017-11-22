@@ -18,8 +18,8 @@ breaking:
   expire: '&7Your breaking timer has expired.'
   break: '&7You have broken that crate.'
 keys:
-  receive: '&7You have received &a{amount} &7{crate} keys. Use /keys claim to claim them.'
-  send: '&7You have sent &b{player} &a{amount} &7{crate} keys.'
+  receive: '&7You received &a{amount} &7{crate} keys. Use /keys claim to claim them.'
+  send: '&7You sent &b{player} &a{amount} &7{crate} keys.'
   check:
     self:
       none: '&7You have no pending {crate} keys.'

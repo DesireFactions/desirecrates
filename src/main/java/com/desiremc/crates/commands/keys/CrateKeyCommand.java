@@ -9,6 +9,10 @@ public class CrateKeyCommand extends ValidBaseCommand
     public CrateKeyCommand()
     {
         super("key", "Manage crate keys.", Rank.GUEST);
+
+        addSubCommand(new CrateKeyGiveCommand());
+        addSubCommand(new CrateKeyClaimCommand());
+        addSubCommand(new CrateKeyCheckComand());
     }
 
 }

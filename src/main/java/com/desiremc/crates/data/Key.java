@@ -12,7 +12,6 @@ import org.mongodb.morphia.annotations.Transient;
 
 import com.desiremc.core.api.items.ItemFlag;
 import com.desiremc.core.api.items.ItemFlagHandler;
-import com.desiremc.core.api.nbt.NBTItem;
 import com.desiremc.crates.DesireCrates;
 
 @Embedded
@@ -76,13 +75,7 @@ public class Key
 
     public boolean isKey(ItemStack item)
     {
-        if (item == null || item.getType() != getItem().getType())
-        {
-            return false;
-        }
-        NBTItem nbt = new NBTItem(item);
-        return nbt.hasKey("crate_id") && nbt.getInteger("crate_id") == crate.getId();
-
+        return item != null && item.getType() == getItem().getType() && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equals(name);
     }
 
     /**

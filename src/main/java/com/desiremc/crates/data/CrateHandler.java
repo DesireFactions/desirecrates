@@ -190,6 +190,7 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
             return false;
         }
         return true;

@@ -1,11 +1,18 @@
 package com.desiremc.crates.data;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Transient;
+
+import net.minecraft.server.v1_7_R4.NBTCompressedStreamTools;
+import net.minecraft.server.v1_7_R4.NBTTagCompound;
+import net.minecraft.util.com.google.common.io.BaseEncoding;
 
 @Embedded
 public class Reward
@@ -17,10 +24,13 @@ public class Reward
 
     private RewardType type;
 
-    private ItemStack item;
+    private String item;
 
     private List<String> commands;
-    
+
+    @Transient
+    private ItemStack parsedItem;
+
     @Transient
     private Crate crate;
 
@@ -28,10 +38,15 @@ public class Reward
     {
         commands = new ArrayList<>();
     }
-    
+
     protected void setCrate(Crate crate)
     {
         this.crate = crate;
+    }
+    
+    public Crate getCrate()
+    {
+        return crate;
     }
 
     /**
@@ -87,15 +102,29 @@ public class Reward
      */
     public ItemStack getItem()
     {
-        return item;
+        if (parsedItem == null)
+        {
+            ByteArrayInputStream input = new ByteArrayInputStream(BaseEncoding.base64().decode(item));
+
+            NBTTagCompound tag = NBTCompressedStreamTools.a(input);
+            net.minecraft.server.v1_7_R4.ItemStack nms = net.minecraft.server.v1_7_R4.ItemStack.createStack(tag);
+
+            parsedItem = CraftItemStack.asBukkitCopy(nms);
+        }
+        return parsedItem;
     }
 
     /**
      * @param item the item to set
      */
-    public void setItem(ItemStack item)
+    public void setItem(ItemStack parsedItem)
     {
-        this.item = item;
+        this.parsedItem = parsedItem;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        NBTTagCompound tag = getTag(parsedItem);
+        NBTCompressedStreamTools.a(tag, output);
+
+        this.item = BaseEncoding.base64().encode(output.toByteArray());
     }
 
     /**
@@ -112,6 +141,23 @@ public class Reward
     public void setCommands(List<String> commands)
     {
         this.commands = commands;
+    }
+
+    private NBTTagCompound getTag(ItemStack item)
+    {
+        if (item == null)
+        {
+            return null;
+        }
+        NBTTagCompound tag = new NBTTagCompound();
+        net.minecraft.server.v1_7_R4.ItemStack stack = getMinecraftStack(item);
+        stack.save(tag);
+        return tag;
+    }
+
+    private net.minecraft.server.v1_7_R4.ItemStack getMinecraftStack(ItemStack stack)
+    {
+        return CraftItemStack.asNMSCopy(stack);
     }
 
     public static enum RewardType
