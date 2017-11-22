@@ -8,6 +8,12 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<repositories>
+		<repository>
+			<id>inventive-repo</id>
+			<url>https://repo.inventivetalent.org/content/repositories/releases</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<!-- Desire Core -->
 		<dependency>
@@ -15,13 +21,11 @@
 			<artifactId>DesireCore</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<!-- Holographic Displays -->
+		<!-- HologramAPI -->
 		<dependency>
-			<groupId>com.gmail.filoghost</groupId>
-			<artifactId>holographic-displays-api</artifactId>
-			<version>2.1.7</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/HolographicDisplaysAPI.jar</systemPath>
+			<groupId>org.inventivetalent</groupId>
+			<artifactId>hologramapi</artifactId>
+			<version>1.4.0</version>
 		</dependency>
 	</dependencies>
 	<build>

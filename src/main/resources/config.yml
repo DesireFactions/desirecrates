@@ -12,4 +12,4 @@ crates:
     holograms:
     - '§f{crate}'
     - '§fRight-click with key to use'
-    - '§fLeft-click to preview'
+    - '§fLeft-click to preview' 

@@ -2,6 +2,7 @@ package com.desiremc.crates.data;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -32,8 +33,9 @@ import com.desiremc.core.utils.Utils;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Reward.RewardType;
 import com.desiremc.crates.gui.PreviewDisplay;
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+
+import de.inventivegames.hologram.Hologram;
+import de.inventivegames.hologram.HologramAPI;
 
 @Converters(LocationTypeConverter.class)
 @Indexes(@Index(fields = @Field(value = "name"), options = @IndexOptions(unique = true)))
@@ -69,7 +71,7 @@ public class Crate
     private Key key;
 
     @Transient
-    private Map<Location, Hologram> holograms;
+    private Map<Location, List<Hologram>> holograms;
 
     @Transient
     private ItemStack item;
@@ -140,12 +142,25 @@ public class Crate
             // generate the holograms
             try
             {
-                Hologram hologram = HologramsAPI.createHologram(DesireCrates.getInstance(), loc.clone().add(0.5, 0.5, 0.5));
-                for (String line : hologramLines)
+                Location clone = loc.clone();
+                clone.add(0.5, 1.75, 0.5);
+                Iterator<String> lines = hologramLines.iterator();
+                String line;
+                Hologram holo = null;
+                List<Hologram> holos = new LinkedList<>();
+                while ((line = lines.next()) != null)
                 {
-                    hologram.appendTextLine(line);
+                    if (holo == null)
+                    {
+                        holo = HologramAPI.createHologram(clone, line);
+                    }
+                    else
+                    {
+                        holo = holo.addLineBelow(line);
+                    }
+                    holos.add(holo);
                 }
-                holograms.put(loc, hologram);
+                holograms.put(loc, holos);
             }
             catch (Exception ex)
             {
@@ -157,9 +172,12 @@ public class Crate
     protected void unloadHolograms()
     {
         // delete all existing holograms
-        for (Hologram holo : holograms.values())
+        for (List<Hologram> holos : holograms.values())
         {
-            holo.delete();
+            for (Hologram holo : holos)
+            {
+                holo.despawn();
+            }
         }
     }
 
@@ -322,9 +340,13 @@ public class Crate
     {
         hologramLines.add(line);
         CrateHandler.saveCrate(this);
-        for (Hologram holo : holograms.values())
+        for (List<Hologram> holos : holograms.values())
         {
-            holo.appendTextLine(line);
+            ListIterator<Hologram> it = holos.listIterator();
+            Hologram holo = null;
+            while (it.hasNext())
+                holo = it.next();
+            it.add(holo.addLineBelow(line));
         }
     }
 
@@ -341,7 +363,9 @@ public class Crate
      */
     public Collection<Hologram> getHolograms()
     {
-        return holograms.values();
+        List<Hologram> holos = new LinkedList<>();
+        holograms.values().forEach(x -> holos.addAll(holos));
+        return holos;
     }
 
     /**
@@ -379,12 +403,24 @@ public class Crate
     {
         getLocations().add(block.getLocation());
         locations.add(Utils.toString(block.getLocation()));
-        Hologram hologram = HologramsAPI.createHologram(DesireCrates.getInstance(), block.getLocation().add(0.5, 0.5, 0.5));
-        for (String line : hologramLines)
+        Location clone = block.getLocation().clone().add(0.5, 1.75, 0.5);
+        Iterator<String> lines = hologramLines.iterator();
+        String line;
+        Hologram holo = null;
+        List<Hologram> holos = new LinkedList<>();
+        while ((line = lines.next()) != null)
         {
-            hologram.appendTextLine(line);
+            if (holo == null)
+            {
+                holo = HologramAPI.createHologram(clone, line);
+            }
+            else
+            {
+                holo = holo.addLineBelow(line);
+            }
+            holos.add(holo);
         }
-        holograms.put(block.getLocation(), hologram);
+        holograms.put(block.getLocation(), holos);
         block.setMetadata(CrateHandler.META, new CrateMetadata(this));
         CrateHandler.saveCrate(this);
     }
@@ -399,8 +435,8 @@ public class Crate
     {
         getLocations().remove(block.getLocation());
         locations.remove(Utils.toString(block.getLocation()));
-        Hologram holo = holograms.get(block.getLocation());
-        holo.delete();
+        List<Hologram> holo = holograms.get(block.getLocation());
+        holo.forEach(x -> x.despawn());
         block.removeMetadata(CrateHandler.META, DesireCrates.getInstance());
         CrateHandler.deleteCrate(this);
     }
