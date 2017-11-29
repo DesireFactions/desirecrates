@@ -38,6 +38,7 @@ public class InteractListener implements Listener
                     if (CrateHandler.isBreaking(e.getPlayer().getUniqueId()))
                     {
                         crate.removeLocation(e.getClickedBlock());
+                        crate.save();
                         e.getClickedBlock().setType(Material.AIR);
                         CrateHandler.toggleBreaking(e.getPlayer().getUniqueId());
                         DesireCrates.getLangHandler().sendRenderMessage(e.getPlayer(), "breaking.break");

@@ -34,7 +34,7 @@ public class CrateKeyClaimCommand extends ValidCommand
 
         if (amount <= 0)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.none",
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.self.none",
                     "{crate}", crate.getName());
             return;
         }
@@ -43,6 +43,9 @@ public class CrateKeyClaimCommand extends ValidCommand
         item.setAmount(amount);
 
         p.getInventory().addItem(item);
+        
+        crate.clearPendingKeys(p.getUniqueId());
+        crate.save();
 
         DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.claim",
                 "{crate}", crate.getName(),

@@ -1,5 +1,7 @@
 package com.desiremc.crates.commands;
 
+import java.util.Collection;
+
 import org.bukkit.command.CommandSender;
 
 import com.desiremc.core.api.command.ValidCommand;
@@ -19,11 +21,19 @@ public class CrateListCommand extends ValidCommand
     @Override
     public void validRun(CommandSender sender, String label, Object... args)
     {
-        DesireCrates.getLangHandler().sendRenderMessageNoPrefix(sender, "list.header");
-        for (Crate crate : CrateHandler.getCrates())
+        Collection<Crate> crates = CrateHandler.getCrates();
+        if (crates.size() == 0)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "list.text",
-                    "{crate}", crate.getName());
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "list.empty");
+        }
+        else
+        {
+            DesireCrates.getLangHandler().sendRenderMessageNoPrefix(sender, "list.header");
+            for (Crate crate : CrateHandler.getCrates())
+            {
+                DesireCrates.getLangHandler().sendRenderMessageNoPrefix(sender, "list.text",
+                        "{crate}", crate.getName());
+            }
         }
 
     }

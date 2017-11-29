@@ -105,7 +105,7 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
     {
         Crate crate = new Crate();
         crate.assignDefaults(name);
-        getInstance().save(crate);
+        crate.save();
         crates.put(crate.getId(), crate);
         return crate;
     }
@@ -115,7 +115,7 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
         crates.remove(crate.getId());
         crate.unloadHolograms();
         crate.setActive(false);
-        saveCrate(crate);
+        crate.save();
     }
 
     public static void restoreCrate(Crate crate)
@@ -123,7 +123,7 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
         crates.put(crate.getId(), crate);
         crate.setActive(true);
         crate.loadLocations();
-        saveCrate(crate);
+        crate.save();
     }
 
     public static Crate getHistoricalCrate(String name)

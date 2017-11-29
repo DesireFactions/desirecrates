@@ -3,6 +3,7 @@ package com.desiremc.crates.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Transient;
@@ -109,8 +110,8 @@ public class Reward
      */
     public void setItem(ItemStack parsedItem)
     {
-        this.parsedItem = parsedItem;
-        this.item = ItemUtils.serializeItem(parsedItem);
+        this.parsedItem = CraftItemStack.asCraftCopy(parsedItem);
+        this.item = ItemUtils.serializeItem(this.parsedItem);
     }
 
     /**

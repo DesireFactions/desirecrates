@@ -1,32 +1,39 @@
 prefix:
-  text: '&6[&3DesireCrates&6]'
+  text: '&6&l[&3DesireCrates&6&l]'
   use: true
 list:
   header: '&c&m----------------------------'
-  text: '&b{crate}'
+  text: '  &e- &b{crate}'
+  empty: '&7No crates have been created.'
 used_name: '&7That name is already used.'
 not_found: '&7Could not find crate.'
-create: '&7Created crate {crate}.'
-delete: '&7Deleted crate {crate}.'
-restore: '&7Restored crate {crate}.'
+create: '&7Created crate &b{crate}&7.'
+delete: '&7Deleted crate &c{crate}&7.'
+restore: '&7Restored crate &b{crate}&7.'
 no_drop: '&7You can''t get rid of crates without /ci.'
-need_key: '&7You don''t have a {crate} key.'
-item: '&7You have been given a {crate} block.'
+need_key: '&7You don''t have a &b{crate} &7key.'
+item: '&7You have been given a &b{crate} &7block.'
 breaking:
   enable: '&7You have enabled crate breaking.'
   disable: '&7You have disabled crate breaking.'
   expire: '&7Your breaking timer has expired.'
-  break: '&7You have broken that crate.'
+  break: '&7Crate broken.'
 keys:
-  receive: '&7You received &a{amount} &7{crate} keys. Use /keys claim to claim them.'
-  send: '&7You sent &b{player} &a{amount} &7{crate} keys.'
+  receive: '&7You received &a{amount} &b{crate}&7 keys. Use /crate keys claim to claim them.'
+  send: '&7You sent &b{player} &a{amount} &b{crate}&7 keys.'
   check:
     self:
-      none: '&7You have no pending {crate} keys.'
-      amount: '&7You have &a{amount} &7pending {crate} keys.'
+      none: '&7You have no pending &a{crate}&7 keys.'
+      amount: '&7You have &a{amount} &7pending &b{crate}&7 keys.'
     others:
       none: '&7{target} has no pending {crate} keys.'
-      amount: '&7{target} has &a{amount} &7pending {crate} keys.'
-  claim: '&7You have claimed &a{amount} &7{crate} keys.'
+      amount: '&7{target} has &a{amount} &7pending &b{crate} keys.'
+  claim: '&7You have claimed &a{amount} &b{crate} keys.'
 rewards:
+  add: '&7Added reward &a{reward}&7 to crate &b{crate}&7.'
+  deleted: '&7Deleted reward &c{reward}&7.'
+  chance: '&7Set the chance for &a{reward}&7 in crate &b{crate} &7to &e{chance}&7.'
+  editing: '&7You are now editing crate &b{crate}&7.'
   already_exists: '&7A reward by that name already exists.'
+  not_editing: '&7Set a kit to edit with /{label} rewards edit [crate]'
+  not_found: '&7Could not find a reward by that name.'

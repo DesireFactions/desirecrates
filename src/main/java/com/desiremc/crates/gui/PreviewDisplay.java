@@ -1,7 +1,5 @@
 package com.desiremc.crates.gui;
 
-import org.bukkit.entity.Player;
-
 import com.desiremc.core.gui.Menu;
 import com.desiremc.core.gui.MenuItem;
 import com.desiremc.crates.data.Crate;
@@ -25,14 +23,7 @@ public class PreviewDisplay extends Menu
         int index = 0;
         for (Reward reward : crate.getRewards())
         {
-            addMenuItem(new MenuItem(reward.getItem())
-            {
-                @Override
-                public void onClick(Player player)
-                {
-
-                }
-            }, index);
+            addMenuItem(MenuItem.empty(reward.getItem()), index);
             index++;
         }
     }

@@ -92,6 +92,7 @@ public class BlockListener implements Listener
             if (SessionUtils.getRank(e.getPlayer()).isManager())
             {
                 crate.addLocation(e.getBlock());
+                crate.save();
             }
             else
             {

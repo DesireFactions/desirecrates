@@ -10,10 +10,13 @@ import com.desiremc.core.api.command.ValidCommand;
 import com.desiremc.core.parsers.DoubleParser;
 import com.desiremc.core.parsers.StringParser;
 import com.desiremc.core.session.Rank;
+import com.desiremc.core.validators.PlayerValidator;
+import com.desiremc.crates.DesireCrates;
+import com.desiremc.crates.commands.rewards.CrateRewardsEditCommand;
 import com.desiremc.crates.data.Crate;
 import com.desiremc.crates.data.Reward;
 import com.desiremc.crates.data.Reward.RewardType;
-import com.desiremc.crates.parsers.CrateParser;
+import com.desiremc.crates.validators.EditingCrateValidator;
 import com.desiremc.crates.validators.UnusedRewardNameValidator;
 
 public class CrateRewardsAddCommandCommand extends ValidCommand
@@ -21,26 +24,29 @@ public class CrateRewardsAddCommandCommand extends ValidCommand
 
     public CrateRewardsAddCommandCommand()
     {
-        super("command", "Add a command reward. Held item used as the display.", Rank.ADMIN, ARITY_REQUIRED_VARIADIC, new String[] { "crate", "name", "chance", "command" });
+        super("command", "Add a command reward. Held item used as the display.", Rank.ADMIN, ARITY_REQUIRED_VARIADIC, new String[] { "name", "chance", "command" });
 
-        addParser(new CrateParser(), "crate");
         addParser(new StringParser(), "name");
         addParser(new DoubleParser(), "chance");
         addParser(new StringParser(), "command");
+
+        addValidator(new PlayerValidator());
+        addValidator(new EditingCrateValidator());
     }
 
     @Override
     public void validRun(CommandSender sender, String label, Object... args)
     {
-        Crate crate = (Crate) args[0];
-        if (!new UnusedRewardNameValidator(crate).validateArgument(sender, label, args[1]))
+        Player player = (Player) sender;
+        Crate crate = CrateRewardsEditCommand.getEditing(player);
+        if (!new UnusedRewardNameValidator(crate).validateArgument(sender, label, args[0]))
         {
             return;
         }
 
-        String name = (String) args[1];
-        double chance = (double) args[2];
-        String command = (String) args[3];
+        String name = (String) args[0];
+        double chance = (double) args[1];
+        String command = (String) args[2];
 
         Reward reward = new Reward();
         reward.setChance(chance);
@@ -48,7 +54,7 @@ public class CrateRewardsAddCommandCommand extends ValidCommand
         reward.setType(RewardType.COMMAND);
 
         ItemStack is;
-        if (sender instanceof Player && ((Player) sender).getItemInHand() != null && ((Player) sender).getItemInHand().getType() != Material.AIR)
+        if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR)
         {
             is = ((Player) sender).getItemInHand();
         }
@@ -63,6 +69,11 @@ public class CrateRewardsAddCommandCommand extends ValidCommand
         reward.getCommands().add(command);
 
         crate.addReward(reward);
+        crate.save();
+
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.add",
+                "{reward}", reward.getName(),
+                "{crate}", crate.getName());
     }
 
 }

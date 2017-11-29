@@ -61,6 +61,8 @@ public class Crate
 
     private Map<UUID, Integer> pendingKeys;
 
+    private int uses;
+
     @Embedded
     private LinkedList<Reward> rewards;
 
@@ -230,7 +232,6 @@ public class Crate
     {
         this.name = name;
         this.stub = name.toLowerCase();
-        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -258,7 +259,6 @@ public class Crate
     public void setFirework(boolean firework)
     {
         this.firework = firework;
-        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -275,7 +275,6 @@ public class Crate
     public void setBroadcast(boolean broadcast)
     {
         this.broadcast = broadcast;
-        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -320,7 +319,6 @@ public class Crate
     public void addReward(Reward reward)
     {
         this.rewards.add(reward);
-        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -329,7 +327,6 @@ public class Crate
     public void removeReward(Reward reward)
     {
         this.rewards.remove(reward);
-        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -341,15 +338,13 @@ public class Crate
     }
 
     /**
-     * Adds a line to the holograms for the crates. This saves it to the database as well as adds it to currently loaded
-     * holograms
+     * Adds a line to the holograms for the crates. This does not save to the database.
      * 
      * @param line the text to add
      */
     public void addHologramLine(String line)
     {
         hologramLines.add(line);
-        CrateHandler.saveCrate(this);
         for (List<Hologram> holos : holograms.values())
         {
             ListIterator<Hologram> it = holos.listIterator();
@@ -384,7 +379,6 @@ public class Crate
     public void setKey(Key key)
     {
         this.key = key;
-        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -434,7 +428,6 @@ public class Crate
         }
         holograms.put(block.getLocation(), holos);
         block.setMetadata(CrateHandler.META, new CrateMetadata(this));
-        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -459,7 +452,6 @@ public class Crate
             });
         }
         block.removeMetadata(CrateHandler.META, DesireCrates.getInstance());
-        CrateHandler.saveCrate(this);
     }
 
     /**
@@ -576,6 +568,47 @@ public class Crate
      */
     public int getPendingKeys(UUID uuid)
     {
-        return pendingKeys.get(uuid);
+        Integer val = pendingKeys.get(uuid);
+        if (val == null)
+        {
+            return 0;
+        }
+        else
+        {
+            return val;
+        }
+    }
+
+    /**
+     * Clear the pending keys of a particular player. This should only be used after a player claims the keys for this
+     * crate.
+     * 
+     * @param uuid the player to clear.
+     */
+    public void clearPendingKeys(UUID uuid)
+    {
+        pendingKeys.remove(uuid);
+    }
+
+    public void save()
+    {
+        Bukkit.getScheduler().runTaskAsynchronously(DesireCrates.getInstance(), new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                CrateHandler.saveCrate(Crate.this);
+            }
+        });
+    }
+
+    /**
+     * How many times this crate has been used by all players. This may be changed in the future to be per player.
+     * 
+     * @return uses
+     */
+    public int getUses()
+    {
+        return uses;
     }
 }
