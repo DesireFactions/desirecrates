@@ -19,8 +19,7 @@ public class EditingCrateValidator extends CommandValidator
         Crate crate = CrateRewardsEditCommand.getEditing(player);
         if (crate == null)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.not_editing",
-                    "{label}", label);
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.not_editing");
             return false;
         }
         return true;

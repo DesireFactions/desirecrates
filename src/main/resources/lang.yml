@@ -35,5 +35,5 @@ rewards:
   chance: '&7Set the chance for &a{reward}&7 in crate &b{crate} &7to &e{chance}&7.'
   editing: '&7You are now editing crate &b{crate}&7.'
   already_exists: '&7A reward by that name already exists.'
-  not_editing: '&7Set a kit to edit with /{label} rewards edit [crate]'
+  not_editing: '&7Not editing a crate. Use /crate rewards edit [crate].'
   not_found: '&7Could not find a reward by that name.'
