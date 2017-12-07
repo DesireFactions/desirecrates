@@ -2,7 +2,6 @@ package com.desiremc.crates.listeners;
 
 import java.util.Iterator;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,6 +14,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.desiremc.core.session.SessionHandler;
 import com.desiremc.core.tickets.TicketHandler;
 import com.desiremc.core.utils.SessionUtils;
 import com.desiremc.crates.DesireCrates;
@@ -98,7 +98,7 @@ public class BlockListener implements Listener
             {
                 Player p = e.getPlayer();
                 p.setItemInHand(null);
-                TicketHandler.openTicket(Bukkit.getConsoleSender(), p.getName() + " was in possession of a crate object.");
+                TicketHandler.openTicket(SessionHandler.getConsoleSession(), p.getName() + " was in possession of a crate object.");
             }
         }
     }
