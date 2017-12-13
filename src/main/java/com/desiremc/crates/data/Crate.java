@@ -27,7 +27,7 @@ import org.mongodb.morphia.annotations.IndexOptions;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Transient;
 
-import com.desiremc.core.utils.Utils;
+import com.desiremc.core.utils.BukkitUtils;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Reward.RewardType;
 import com.desiremc.crates.gui.PreviewDisplay;
@@ -391,7 +391,7 @@ public class Crate
             parsedLocations = new LinkedList<>();
             for (String str : locations)
             {
-                parsedLocations.add(Utils.toLocation(str));
+                parsedLocations.add(BukkitUtils.toLocation(str));
             }
         }
         return parsedLocations;
@@ -406,7 +406,7 @@ public class Crate
     public void addLocation(Block block)
     {
         getLocations().add(block.getLocation());
-        locations.add(Utils.toString(block.getLocation()));
+        locations.add(BukkitUtils.toString(block.getLocation()));
         Location clone = block.getLocation().clone().add(0.5, 1.75, 0.5);
         Iterator<String> lines = hologramLines.iterator();
         String line;
@@ -439,7 +439,7 @@ public class Crate
     public void removeLocation(Block block)
     {
         getLocations().remove(block.getLocation());
-        locations.remove(Utils.toString(block.getLocation()));
+        locations.remove(BukkitUtils.toString(block.getLocation()));
         List<Hologram> holo = holograms.get(block.getLocation());
         if (holo != null)
         {
