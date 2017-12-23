@@ -1,10 +1,9 @@
 package com.desiremc.crates.parsers;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import java.util.List;
 
-import com.desiremc.core.api.command.ArgumentParser;
-import com.desiremc.core.validators.PlayerValidator;
+import com.desiremc.core.api.newcommands.Parser;
+import com.desiremc.core.session.Session;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.commands.rewards.CrateRewardsEditCommand;
 import com.desiremc.crates.data.Crate;
@@ -17,26 +16,20 @@ import com.desiremc.crates.validators.EditingCrateValidator;
  * 
  * @author Michael Ziluck
  */
-public class RewardParser implements ArgumentParser
+public class RewardParser implements Parser<Reward>
 {
 
     @Override
-    public Object parseArgument(CommandSender sender, String label, String arg)
+    public Reward parseArgument(Session sender, String[] label, String arg)
     {
-        // check if the sender is a player
-        if (!new PlayerValidator().validateArgument(sender, label, null))
-        {
-            return null;
-        }
-
         // check that the player is editing a crate
-        if (!new EditingCrateValidator().validateArgument(sender, label, null))
+        if (!new EditingCrateValidator().validate(sender))
         {
             return null;
         }
 
         // get the crate the player is editing
-        Crate crate = CrateRewardsEditCommand.getEditing((Player) sender);
+        Crate crate = CrateRewardsEditCommand.getEditing(sender.getUniqueId());
 
         // get the reward by the given name
         Reward reward = crate.getReward(arg);
@@ -50,6 +43,12 @@ public class RewardParser implements ArgumentParser
 
         // return the reward
         return reward;
+    }
+
+    @Override
+    public List<String> getRecommendations(Session sender, String lastWord)
+    {
+        return null;
     }
 
 }

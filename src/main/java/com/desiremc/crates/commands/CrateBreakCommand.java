@@ -1,11 +1,11 @@
 package com.desiremc.crates.commands;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import java.util.List;
 
-import com.desiremc.core.api.command.ValidCommand;
+import com.desiremc.core.api.newcommands.CommandArgument;
+import com.desiremc.core.api.newcommands.ValidCommand;
 import com.desiremc.core.session.Rank;
-import com.desiremc.core.validators.PlayerValidator;
+import com.desiremc.core.session.Session;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.CrateHandler;
 
@@ -14,16 +14,14 @@ public class CrateBreakCommand extends ValidCommand
 
     public CrateBreakCommand()
     {
-        super("break", "Break a crate location.", Rank.ADMIN, new String[] {});
-
-        addValidator(new PlayerValidator());
+        super("break", "Break a crate location.", Rank.ADMIN, true);
     }
 
     @Override
-    public void validRun(CommandSender sender, String label, Object... args)
+    public void validRun(Session sender, String label[], List<CommandArgument<?>> args)
     {
-        Player p = (Player) sender;
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "breaking." + (CrateHandler.toggleBreaking(p.getUniqueId()) ? "enable" : "disable"));
+        DesireCrates.getLangHandler().sendRenderMessage(sender,
+                "breaking." + (CrateHandler.toggleBreaking(sender.getUniqueId()) ? "enable" : "disable"));
     }
 
 }

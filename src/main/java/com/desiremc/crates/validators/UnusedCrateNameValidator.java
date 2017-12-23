@@ -1,18 +1,17 @@
 package com.desiremc.crates.validators;
 
-import org.bukkit.command.CommandSender;
-
-import com.desiremc.core.api.command.CommandValidator;
+import com.desiremc.core.api.newcommands.Validator;
+import com.desiremc.core.session.Session;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.CrateHandler;
 
-public class UnusedCrateNameValidator extends CommandValidator
+public class UnusedCrateNameValidator implements Validator<String>
 {
 
     @Override
-    public boolean validateArgument(CommandSender sender, String label, Object arg)
+    public boolean validateArgument(Session sender, String[] label, String arg)
     {
-        if (CrateHandler.getCrate((String) arg) == null && CrateHandler.getHistoricalCrate((String) arg) == null)
+        if (CrateHandler.getCrate(arg) == null && CrateHandler.getHistoricalCrate(arg) == null)
         {
             return true;
         }

@@ -1,14 +1,14 @@
 package com.desiremc.crates.commands.rewards;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import com.desiremc.core.api.command.ValidCommand;
+import com.desiremc.core.api.newcommands.CommandArgument;
+import com.desiremc.core.api.newcommands.CommandArgumentBuilder;
+import com.desiremc.core.api.newcommands.ValidCommand;
 import com.desiremc.core.session.Rank;
-import com.desiremc.core.validators.PlayerValidator;
+import com.desiremc.core.session.Session;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Crate;
 import com.desiremc.crates.parsers.CrateParser;
@@ -20,21 +20,22 @@ public class CrateRewardsEditCommand extends ValidCommand
 
     public CrateRewardsEditCommand()
     {
-        super("edit", "Edit the rewards.", Rank.ADMIN, new String[] { "crate" });
+        super("edit", "Edit the rewards.", Rank.ADMIN, true);
 
-        addParser(new CrateParser(), "crate");
+        addArgument(CommandArgumentBuilder.createBuilder(Crate.class)
+                .setName("crate")
+                .setParser(new CrateParser())
+                .build());
 
-        addValidator(new PlayerValidator());
     }
 
     @Override
-    public void validRun(CommandSender sender, String label, Object... args)
+    public void validRun(Session sender, String label[], List<CommandArgument<?>> args)
     {
-        Player player = (Player) sender;
-        Crate crate = (Crate) args[0];
+        Crate crate = (Crate) args.get(0).getValue();
 
-        setEditing(player, crate);
-        
+        setEditing(sender, crate);
+
         DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.editing",
                 "{crate}", crate.getName());
     }
@@ -46,9 +47,9 @@ public class CrateRewardsEditCommand extends ValidCommand
      * @param player the player.
      * @return the crate the player is editing.
      */
-    public static Crate getEditing(Player player)
+    public static Crate getEditing(UUID uuid)
     {
-        return editing.get(player.getUniqueId());
+        return editing.get(uuid);
     }
 
     /**
@@ -58,7 +59,7 @@ public class CrateRewardsEditCommand extends ValidCommand
      * @param player the player.
      * @param crate the crate.
      */
-    public static void setEditing(Player player, Crate crate)
+    public static void setEditing(Session player, Crate crate)
     {
         if (crate == null)
         {

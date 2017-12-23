@@ -1,13 +1,14 @@
 package com.desiremc.crates.commands.keys;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import java.util.List;
+
 import org.bukkit.inventory.ItemStack;
 
-import com.desiremc.core.api.command.ValidCommand;
-import com.desiremc.core.session.Rank;
-import com.desiremc.core.validators.FreeSlotValidator;
-import com.desiremc.core.validators.PlayerValidator;
+import com.desiremc.core.api.newcommands.CommandArgument;
+import com.desiremc.core.api.newcommands.CommandArgumentBuilder;
+import com.desiremc.core.api.newcommands.ValidCommand;
+import com.desiremc.core.newvalidators.SenderHasFreeSlotValidator;
+import com.desiremc.core.session.Session;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Crate;
 import com.desiremc.crates.parsers.CrateParser;
@@ -17,34 +18,28 @@ public class CrateKeyClaimCommand extends ValidCommand
 
     public CrateKeyClaimCommand()
     {
-        super("claim", "Claim pending keys.", Rank.GUEST, new String[] { "crate" });
+        super("claim", "Claim pending keys.", true);
 
-        addParser(new CrateParser(), "crate");
+        addArgument(CommandArgumentBuilder.createBuilder(Crate.class)
+                .setName("crate")
+                .setParser(new CrateParser())
+                .build());
 
-        addValidator(new PlayerValidator());
-        addValidator(new FreeSlotValidator());
+        addSenderValidator(new SenderHasFreeSlotValidator());
     }
 
     @Override
-    public void validRun(CommandSender sender, String label, Object... args)
+    public void validRun(Session sender, String label[], List<CommandArgument<?>> args)
     {
-        Player p = (Player) sender;
-        Crate crate = (Crate) args[0];
-        int amount = crate.getPendingKeys(p.getUniqueId());
-
-        if (amount <= 0)
-        {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.self.none",
-                    "{crate}", crate.getName());
-            return;
-        }
+        Crate crate = (Crate) args.get(0).getValue();
+        int amount = crate.getPendingKeys(sender.getUniqueId());
 
         ItemStack item = crate.getKey().getItem();
         item.setAmount(amount);
 
-        p.getInventory().addItem(item);
-        
-        crate.clearPendingKeys(p.getUniqueId());
+        sender.getPlayer().getInventory().addItem(item);
+
+        crate.clearPendingKeys(sender.getUniqueId());
         crate.save();
 
         DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.claim",

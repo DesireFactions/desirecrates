@@ -1,14 +1,13 @@
 package com.desiremc.crates.commands.keys;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import java.util.List;
 
-import com.desiremc.core.DesireCore;
-import com.desiremc.core.api.command.ValidCommand;
-import com.desiremc.core.parsers.PlayerSessionParser;
+import com.desiremc.core.api.newcommands.CommandArgument;
+import com.desiremc.core.api.newcommands.CommandArgumentBuilder;
+import com.desiremc.core.api.newcommands.ValidCommand;
+import com.desiremc.core.newparsers.SessionParser;
 import com.desiremc.core.session.Rank;
 import com.desiremc.core.session.Session;
-import com.desiremc.core.utils.SessionUtils;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Crate;
 import com.desiremc.crates.parsers.CrateParser;
@@ -18,21 +17,29 @@ public class CrateKeyCheckComand extends ValidCommand
 
     public CrateKeyCheckComand()
     {
-        super("check", "Check how many crate keys you have.", Rank.GUEST, ARITY_OPTIONAL, new String[] { "crate", "target" });
+        super("check", "Check how many crate keys you have.");
 
-        addParser(new CrateParser(), "crate");
-        addParser(new PlayerSessionParser(), "target");
+        addArgument(CommandArgumentBuilder.createBuilder(Crate.class)
+                .setName("crate")
+                .setParser(new CrateParser())
+                .build());
+
+        addArgument(CommandArgumentBuilder.createBuilder(Session.class)
+                .setName("target")
+                .setParser(new SessionParser())
+                .setRequiredRank(Rank.MODERATOR)
+                .setOptional()
+                .build());
     }
 
     @Override
-    public void validRun(CommandSender sender, String label, Object... args)
+    public void validRun(Session sender, String label[], List<CommandArgument<?>> args)
     {
-        Player p = (Player) sender;
-        Crate crate = (Crate) args[0];
+        Crate crate = (Crate) args.get(0).getValue();
 
-        if (args.length == 1)
+        if (args.get(1).hasValue())
         {
-            int amount = crate.getPendingKeys(p.getUniqueId());
+            int amount = crate.getPendingKeys(sender.getUniqueId());
 
             if (amount <= 0)
             {
@@ -46,13 +53,9 @@ public class CrateKeyCheckComand extends ValidCommand
                         "{amount}", amount);
             }
         }
-        else if (!SessionUtils.getRank(p).isManager())
-        {
-            DesireCore.getLangHandler().sendRenderMessage(sender, "no_permissions");
-        }
         else
         {
-            Session target = (Session) args[1];
+            Session target = (Session) args.get(1).getValue();
             int amount = crate.getPendingKeys(target.getUniqueId());
             if (amount <= 0)
             {

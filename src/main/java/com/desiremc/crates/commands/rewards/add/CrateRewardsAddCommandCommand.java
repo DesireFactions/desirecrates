@@ -1,16 +1,20 @@
 package com.desiremc.crates.commands.rewards.add;
 
+import java.util.List;
+
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.desiremc.core.api.command.ValidCommand;
-import com.desiremc.core.parsers.DoubleParser;
-import com.desiremc.core.parsers.StringParser;
+import com.desiremc.core.api.newcommands.CommandArgument;
+import com.desiremc.core.api.newcommands.CommandArgumentBuilder;
+import com.desiremc.core.api.newcommands.ValidCommand;
+import com.desiremc.core.newparsers.DoubleParser;
+import com.desiremc.core.newparsers.StringParser;
+import com.desiremc.core.newvalidators.NumberSizeValidator;
 import com.desiremc.core.session.Rank;
-import com.desiremc.core.validators.PlayerValidator;
+import com.desiremc.core.session.Session;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.commands.rewards.CrateRewardsEditCommand;
 import com.desiremc.crates.data.Crate;
@@ -24,29 +28,37 @@ public class CrateRewardsAddCommandCommand extends ValidCommand
 
     public CrateRewardsAddCommandCommand()
     {
-        super("command", "Add a command reward. Held item used as the display.", Rank.ADMIN, ARITY_REQUIRED_VARIADIC, new String[] { "name", "chance", "command" });
+        super("command", "Add a command reward. Held item used as the display.", Rank.ADMIN, true);
 
-        addParser(new StringParser(), "name");
-        addParser(new DoubleParser(), "chance");
-        addParser(new StringParser(), "command");
+        addSenderValidator(new EditingCrateValidator());
 
-        addValidator(new PlayerValidator());
-        addValidator(new EditingCrateValidator());
+        addArgument(CommandArgumentBuilder.createBuilder(String.class)
+                .setName("name")
+                .setParser(new StringParser())
+                .addValidator(new UnusedRewardNameValidator())
+                .build());
+
+        addArgument(CommandArgumentBuilder.createBuilder(Double.class)
+                .setName("chance")
+                .setParser(new DoubleParser())
+                .addValidator(new NumberSizeValidator<Double>(0.0, 100.0))
+                .build());
+
+        addArgument(CommandArgumentBuilder.createBuilder(String.class)
+                .setName("command")
+                .setParser(new StringParser())
+                .setVariableLength()
+                .build());
     }
 
     @Override
-    public void validRun(CommandSender sender, String label, Object... args)
+    public void validRun(Session sender, String label[], List<CommandArgument<?>> args)
     {
-        Player player = (Player) sender;
-        Crate crate = CrateRewardsEditCommand.getEditing(player);
-        if (!new UnusedRewardNameValidator(crate).validateArgument(sender, label, args[0]))
-        {
-            return;
-        }
+        Crate crate = CrateRewardsEditCommand.getEditing(sender.getUniqueId());
 
-        String name = (String) args[0];
-        double chance = (double) args[1];
-        String command = (String) args[2];
+        String name = (String) args.get(0).getValue();
+        double chance = (Double) args.get(1).getValue();
+        String command = (String) args.get(2).getValue();
 
         Reward reward = new Reward();
         reward.setChance(chance);
@@ -54,7 +66,7 @@ public class CrateRewardsAddCommandCommand extends ValidCommand
         reward.setType(RewardType.COMMAND);
 
         ItemStack is;
-        if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR)
+        if (sender.getPlayer().getItemInHand() != null && sender.getPlayer().getItemInHand().getType() != Material.AIR)
         {
             is = ((Player) sender).getItemInHand();
         }

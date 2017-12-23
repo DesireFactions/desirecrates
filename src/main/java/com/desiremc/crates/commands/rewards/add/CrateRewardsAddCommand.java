@@ -1,6 +1,6 @@
 package com.desiremc.crates.commands.rewards.add;
 
-import com.desiremc.core.api.command.ValidBaseCommand;
+import com.desiremc.core.api.newcommands.ValidBaseCommand;
 import com.desiremc.core.session.Rank;
 
 public class CrateRewardsAddCommand extends ValidBaseCommand

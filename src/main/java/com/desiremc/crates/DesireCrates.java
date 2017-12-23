@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.desiremc.core.api.FileHandler;
 import com.desiremc.core.api.LangHandler;
-import com.desiremc.core.api.command.CustomCommandHandler;
+import com.desiremc.core.api.newcommands.CommandHandler;
 import com.desiremc.core.listeners.ListenerManager;
 import com.desiremc.crates.commands.CrateCommand;
 import com.desiremc.crates.data.CrateHandler;
@@ -31,7 +31,7 @@ public class DesireCrates extends JavaPlugin
 
         registerListeners();
         registerCommands();
-        
+
         CrateHandler.initialize();
     }
 
@@ -45,7 +45,7 @@ public class DesireCrates extends JavaPlugin
 
     private void registerCommands()
     {
-        CustomCommandHandler commandHandler = CustomCommandHandler.getInstance();
+        CommandHandler commandHandler = CommandHandler.getInstance();
         commandHandler.registerCommand(new CrateCommand(), this);
     }
 

@@ -1,27 +1,29 @@
 package com.desiremc.crates.validators;
 
-import org.bukkit.command.CommandSender;
-
-import com.desiremc.core.api.command.CommandValidator;
+import com.desiremc.core.api.newcommands.Validator;
+import com.desiremc.core.session.Session;
 import com.desiremc.crates.DesireCrates;
+import com.desiremc.crates.commands.rewards.CrateRewardsEditCommand;
 import com.desiremc.crates.data.Crate;
 
-public class UnusedRewardNameValidator extends CommandValidator
+/**
+ * This validator assumes the sender is editing a crate. If they are not, it will fail gracefully but will not send an
+ * error message.
+ * 
+ * @author Michael Ziluck
+ */
+public class UnusedRewardNameValidator implements Validator<String>
 {
 
-    private Crate crate;
-
-    public UnusedRewardNameValidator(Crate crate)
-    {
-        this.crate = crate;
-    }
-
     @Override
-    public boolean validateArgument(CommandSender sender, String label, Object arg)
+    public boolean validateArgument(Session sender, String[] label, String arg)
     {
-        String name = (String) arg;
-
-        if (crate.getReward(name) != null)
+        Crate crate = CrateRewardsEditCommand.getEditing(sender.getUniqueId());
+        if (crate == null)
+        {
+            return false;
+        }
+        if (crate.getReward(arg) != null)
         {
             DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.already_exists");
             return false;

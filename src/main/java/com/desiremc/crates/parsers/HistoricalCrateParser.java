@@ -1,17 +1,18 @@
 package com.desiremc.crates.parsers;
 
-import org.bukkit.command.CommandSender;
+import java.util.List;
 
-import com.desiremc.core.api.command.ArgumentParser;
+import com.desiremc.core.api.newcommands.Parser;
+import com.desiremc.core.session.Session;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Crate;
 import com.desiremc.crates.data.CrateHandler;
 
-public class HistoricalCrateParser implements ArgumentParser
+public class HistoricalCrateParser implements Parser<Crate>
 {
 
     @Override
-    public Object parseArgument(CommandSender sender, String label, String arg)
+    public Crate parseArgument(Session sender, String[] label, String arg)
     {
         Crate crate = CrateHandler.getHistoricalCrate(arg);
         if (crate != null)
@@ -20,6 +21,12 @@ public class HistoricalCrateParser implements ArgumentParser
         }
 
         DesireCrates.getLangHandler().sendRenderMessage(sender, "not_found");
+        return null;
+    }
+
+    @Override
+    public List<String> getRecommendations(Session sender, String lastWord)
+    {
         return null;
     }
 

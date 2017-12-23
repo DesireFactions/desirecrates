@@ -1,13 +1,15 @@
 package com.desiremc.crates.commands.keys;
 
-import org.bukkit.command.CommandSender;
+import java.util.List;
 
-import com.desiremc.core.api.command.ValidCommand;
-import com.desiremc.core.parsers.IntegerParser;
-import com.desiremc.core.parsers.PlayerSessionParser;
+import com.desiremc.core.api.newcommands.CommandArgument;
+import com.desiremc.core.api.newcommands.CommandArgumentBuilder;
+import com.desiremc.core.api.newcommands.ValidCommand;
+import com.desiremc.core.newparsers.IntegerParser;
+import com.desiremc.core.newparsers.SessionParser;
+import com.desiremc.core.newvalidators.NumberSizeValidator;
 import com.desiremc.core.session.Rank;
 import com.desiremc.core.session.Session;
-import com.desiremc.core.validators.IntegerSizeValidator;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Crate;
 import com.desiremc.crates.parsers.CrateParser;
@@ -17,21 +19,31 @@ public class CrateKeyGiveCommand extends ValidCommand
 
     public CrateKeyGiveCommand()
     {
-        super("give", "Give a key to a player.", Rank.ADMIN, new String[] { "player", "crate", "amount" }, new String[] { "send" });
+        super("give", "Give a key to a player.", Rank.ADMIN, new String[] { "send" });
 
-        addParser(new PlayerSessionParser(), "player");
-        addParser(new CrateParser(), "crate");
-        addParser(new IntegerParser(), "amount");
-
-        addValidator(new IntegerSizeValidator(0, 10), "amount");
+        addArgument(CommandArgumentBuilder.createBuilder(Session.class)
+                .setName("player")
+                .setParser(new SessionParser())
+                .build());
+        
+        addArgument(CommandArgumentBuilder.createBuilder(Crate.class)
+                .setName("crate")
+                .setParser(new CrateParser())
+                .build());
+        
+        addArgument(CommandArgumentBuilder.createBuilder(Integer.class)
+                .setName("amount")
+                .setParser(new IntegerParser())
+                .addValidator(new NumberSizeValidator<Integer>(0, 10))
+                .build());
     }
 
     @Override
-    public void validRun(CommandSender sender, String label, Object... args)
+    public void validRun(Session sender, String label[], List<CommandArgument<?>> args)
     {
-        Session s = (Session) args[0];
-        Crate crate = (Crate) args[1];
-        int amount = (int) args[2];
+        Session s = (Session) args.get(0).getValue();
+        Crate crate = (Crate) args.get(1).getValue();
+        int amount = (int) args.get(2).getValue();
 
         DesireCrates.getLangHandler().sendRenderMessage(s.getPlayer(), "keys.receive",
                 "{amount}", amount,
@@ -41,7 +53,7 @@ public class CrateKeyGiveCommand extends ValidCommand
                 "{amount}", amount,
                 "{crate}", crate.getName(),
                 "{player}", s.getName());
-        
+
         crate.addPendingKeys(s.getUniqueId(), amount);
     }
 
