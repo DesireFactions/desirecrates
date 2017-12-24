@@ -43,7 +43,7 @@ public class CrateKeyGiveCommand extends ValidCommand
     {
         Session s = (Session) args.get(0).getValue();
         Crate crate = (Crate) args.get(1).getValue();
-        int amount = (int) args.get(2).getValue();
+        int amount = (Integer) args.get(2).getValue();
 
         DesireCrates.getLangHandler().sendRenderMessage(s.getPlayer(), "keys.receive",
                 "{amount}", amount,

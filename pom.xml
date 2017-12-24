@@ -8,12 +8,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<repositories>
-		<repository>
-			<id>inventive-repo</id>
-			<url>https://repo.inventivetalent.org/content/repositories/releases</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<!-- Desire Core -->
 		<dependency>
