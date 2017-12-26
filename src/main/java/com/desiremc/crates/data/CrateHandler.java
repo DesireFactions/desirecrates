@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.mongodb.morphia.dao.BasicDAO;
 
 import com.desiremc.core.DesireCore;
+import com.desiremc.core.utils.PlayerUtils;
 import com.desiremc.core.utils.SessionUtils;
 import com.desiremc.core.utils.cache.Cache;
 import com.desiremc.core.utils.cache.RemovalListener;
@@ -44,7 +44,7 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
             {
                 if (entry.getCause() == Cause.EXPIRE)
                 {
-                    DesireCrates.getLangHandler().sendRenderMessage(Bukkit.getPlayer(entry.getKey()), "breaking.expire");
+                    DesireCrates.getLangHandler().sendRenderMessage(PlayerUtils.getPlayer(entry.getKey()), "breaking.expire", true, false);
                 }
             }
         }, DesireCrates.getInstance());

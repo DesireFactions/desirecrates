@@ -36,7 +36,7 @@ public class CrateRewardsEditCommand extends ValidCommand
 
         setEditing(sender, crate);
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.editing",
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.editing", true, false,
                 "{crate}", crate.getName());
     }
 
