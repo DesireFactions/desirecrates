@@ -32,7 +32,7 @@ public class CrateCreateCommand extends ValidCommand
     {
         Crate crate = CrateHandler.createCrate((String) args.get(0).getValue());
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "create", "{crate}", crate.getName());
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "create", true, false, "{crate}", crate.getName());
     }
 
 }

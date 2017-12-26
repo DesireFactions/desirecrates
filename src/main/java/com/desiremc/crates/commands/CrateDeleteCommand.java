@@ -33,7 +33,7 @@ public class CrateDeleteCommand extends ValidCommand
 
         CrateHandler.deleteCrate(crate);
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "delete", "{crate}", crate.getName());
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "delete", true, false, "{crate}", crate.getName());
     }
 
 }

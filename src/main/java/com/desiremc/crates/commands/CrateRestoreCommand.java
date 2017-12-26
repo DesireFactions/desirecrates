@@ -31,8 +31,8 @@ public class CrateRestoreCommand extends ValidCommand
     {
         Crate crate = (Crate) args.get(0).getValue();
         CrateHandler.restoreCrate(crate);
-        
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "restore",
+
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "restore", false, false,
                 "{crate}", crate.getName());
     }
 

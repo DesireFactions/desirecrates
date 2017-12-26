@@ -66,7 +66,7 @@ public class CrateRewardsAddItemCommand extends ValidCommand
         crate.addReward(reward);
         crate.save();
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.add",
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.add", true, false,
                 "{reward}", reward.getName(),
                 "{crate}", crate.getName());
     }

@@ -15,7 +15,7 @@ public class SenderHasCrateKeysValidator implements Validator<Crate>
 
         if (amount <= 0)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.self.none",
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.self.none", true, false,
                     "{crate}", arg.getName());
             return false;
         }

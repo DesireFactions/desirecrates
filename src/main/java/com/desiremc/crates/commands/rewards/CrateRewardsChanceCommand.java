@@ -46,7 +46,7 @@ public class CrateRewardsChanceCommand extends ValidCommand
         reward.setChance(chance);
         crate.save();
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.chance",
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.chance", true, false,
                 "{reward}", reward.getName(),
                 "{crate}", crate.getName(),
                 "{chance}", reward.getChance());

@@ -37,7 +37,7 @@ public class RewardParser implements Parser<Reward>
         // check that the reward exists
         if (reward == null)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.not_found");
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.not_found", true, false);
             return null;
         }
 

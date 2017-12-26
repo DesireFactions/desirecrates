@@ -20,7 +20,7 @@ public class EditingCrateValidator implements SenderValidator
         Crate crate = CrateRewardsEditCommand.getEditing(sender.getUniqueId());
         if (crate == null)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.not_editing");
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.not_editing", true, false);
             return false;
         }
         return true;

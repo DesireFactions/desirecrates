@@ -25,7 +25,7 @@ public class UnusedRewardNameValidator implements Validator<String>
         }
         if (crate.getReward(arg) != null)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.already_exists");
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.already_exists", true, false);
             return false;
         }
 

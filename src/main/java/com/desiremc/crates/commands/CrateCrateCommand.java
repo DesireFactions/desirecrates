@@ -38,7 +38,7 @@ public class CrateCrateCommand extends ValidCommand
 
         sender.getPlayer().getInventory().addItem(item);
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "item", "{crate}", crate.getName());
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "item", true, false, "{crate}", crate.getName());
     }
 
 }

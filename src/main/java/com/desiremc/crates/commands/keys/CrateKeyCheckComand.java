@@ -43,12 +43,12 @@ public class CrateKeyCheckComand extends ValidCommand
 
             if (amount <= 0)
             {
-                DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.self.none",
+                DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.self.none", true, false,
                         "{crate}", crate.getName());
             }
             else
             {
-                DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.self.amount",
+                DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.self.amount", true, false,
                         "{crate}", crate.getName(),
                         "{amount}", amount);
             }
@@ -59,13 +59,13 @@ public class CrateKeyCheckComand extends ValidCommand
             int amount = crate.getPendingKeys(target.getUniqueId());
             if (amount <= 0)
             {
-                DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.others.none",
+                DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.others.none", true, false,
                         "{crate}", crate.getName(),
                         "{target}", target.getName());
             }
             else
             {
-                DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.others.amount",
+                DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.check.others.amount", true, false,
                         "{crate}", crate.getName(),
                         "{amount}", amount,
                         "{target}", target.getName());

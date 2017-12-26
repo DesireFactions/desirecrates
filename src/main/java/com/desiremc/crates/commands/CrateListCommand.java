@@ -24,14 +24,14 @@ public class CrateListCommand extends ValidCommand
         Collection<Crate> crates = CrateHandler.getCrates();
         if (crates.size() == 0)
         {
-            DesireCrates.getLangHandler().sendRenderMessage(sender, "list.empty");
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "list.empty", true, false);
         }
         else
         {
-            DesireCrates.getLangHandler().sendRenderMessageNoPrefix(sender, "list.header");
+            DesireCrates.getLangHandler().sendRenderMessage(sender, "list.header", false, false);
             for (Crate crate : CrateHandler.getCrates())
             {
-                DesireCrates.getLangHandler().sendRenderMessageNoPrefix(sender, "list.text",
+                DesireCrates.getLangHandler().sendRenderMessage(sender, "list.text", false, false,
                         "{crate}", crate.getName());
             }
         }

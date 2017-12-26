@@ -16,7 +16,7 @@ public class UnusedCrateNameValidator implements Validator<String>
             return true;
         }
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "used_name");
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "used_name", true, false);
         return false;
     }
 

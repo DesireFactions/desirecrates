@@ -30,7 +30,7 @@ public class InteractListener implements Listener
                     else if (crate.getKnockback() > 0)
                     {
                         e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(-crate.getKnockback()));
-                        DesireCrates.getLangHandler().getString("need_key");
+                        DesireCrates.getLangHandler().sendRenderMessage(e.getPlayer(), "need_key", true, false);
                     }
                 }
                 else if (e.getAction() == Action.LEFT_CLICK_BLOCK)
@@ -41,7 +41,7 @@ public class InteractListener implements Listener
                         crate.save();
                         e.getClickedBlock().setType(Material.AIR);
                         CrateHandler.toggleBreaking(e.getPlayer().getUniqueId());
-                        DesireCrates.getLangHandler().sendRenderMessage(e.getPlayer(), "breaking.break");
+                        DesireCrates.getLangHandler().sendRenderMessage(e.getPlayer(), "breaking.break", true, false);
                     }
                     else
                     {

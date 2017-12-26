@@ -30,7 +30,7 @@ public class BlockListener implements Listener
         if (CrateHandler.getCrate(e.getItemDrop().getItemStack()) != null)
         {
             e.setCancelled(true);
-            DesireCrates.getLangHandler().sendRenderMessage(e.getPlayer(), "no_drop");
+            DesireCrates.getLangHandler().sendRenderMessage(e.getPlayer(), "no_drop", false, false);
         }
     }
 
@@ -58,7 +58,7 @@ public class BlockListener implements Listener
                 e.setCancelled(true);
                 if (e.getInitiator().getHolder() instanceof Player)
                 {
-                    DesireCrates.getLangHandler().sendRenderMessage((Player) e.getInitiator().getHolder(), "no_drop");
+                    DesireCrates.getLangHandler().sendRenderMessage((Player) e.getInitiator().getHolder(), "no_drop", false, false);
                 }
             }
         }
@@ -72,7 +72,7 @@ public class BlockListener implements Listener
             e.setCancelled(true);
             if (e.getWhoClicked() instanceof Player)
             {
-                DesireCrates.getLangHandler().sendRenderMessage((Player) e.getWhoClicked(), "no_drop");
+                DesireCrates.getLangHandler().sendRenderMessage((Player) e.getWhoClicked(), "no_drop", true, false);
             }
         }
     }

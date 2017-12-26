@@ -42,7 +42,7 @@ public class CrateKeyClaimCommand extends ValidCommand
         crate.clearPendingKeys(sender.getUniqueId());
         crate.save();
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.claim",
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "keys.claim", true, false,
                 "{crate}", crate.getName(),
                 "{amount}", amount);
     }

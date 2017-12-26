@@ -34,7 +34,7 @@ public class CrateRewardsRemoveCommand extends ValidCommand
         crate.removeReward(reward);
         crate.save();
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.delete",
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "rewards.delete", true, false,
                 "{reward}", reward.getName());
     }
 

@@ -20,7 +20,7 @@ public class HistoricalCrateParser implements Parser<Crate>
             return crate;
         }
 
-        DesireCrates.getLangHandler().sendRenderMessage(sender, "not_found");
+        DesireCrates.getLangHandler().sendRenderMessage(sender, "not_found", true, false);
         return null;
     }
 

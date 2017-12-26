@@ -21,7 +21,7 @@ public class CrateBreakCommand extends ValidCommand
     public void validRun(Session sender, String label[], List<CommandArgument<?>> args)
     {
         DesireCrates.getLangHandler().sendRenderMessage(sender,
-                "breaking." + (CrateHandler.toggleBreaking(sender.getUniqueId()) ? "enable" : "disable"));
+                "breaking." + (CrateHandler.toggleBreaking(sender.getUniqueId()) ? "enable" : "disable"), true, false);
     }
 
 }
