@@ -10,7 +10,7 @@ public class CrateCommand extends ValidBaseCommand
 
     public CrateCommand()
     {
-        super("crate", "View and manage crates.", Rank.ADMIN, new String[] { "crates" });
+        super("crate", "View and manage crates.", Rank.GUEST, new String[] {"crates"});
 
         addSubCommand(new CrateCreateCommand());
         addSubCommand(new CrateCrateCommand());

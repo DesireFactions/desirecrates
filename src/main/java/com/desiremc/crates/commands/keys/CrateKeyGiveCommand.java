@@ -34,7 +34,7 @@ public class CrateKeyGiveCommand extends ValidCommand
         addArgument(CommandArgumentBuilder.createBuilder(Integer.class)
                 .setName("amount")
                 .setParser(new IntegerParser())
-                .addValidator(new NumberSizeValidator<Integer>(0, 10))
+                .addValidator(new NumberSizeValidator<>(0, 10))
                 .build());
     }
 
