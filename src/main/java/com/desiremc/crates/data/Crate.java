@@ -101,6 +101,7 @@ public class Crate
             hologramLines.set(i, hologramLines.get(i).replace("{crate}", getName()));
         }
         this.key = new Key().assignDefaults(this);
+        this.id = CrateHandler.getInstance().getNextID();
     }
 
     protected void loadLocations()

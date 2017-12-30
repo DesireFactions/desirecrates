@@ -186,7 +186,6 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
                 }
                 crate.loadLocations();
             }
-            getInstance().nextId++;
         }
         catch (Exception ex)
         {
@@ -194,6 +193,11 @@ public class CrateHandler extends BasicDAO<Crate, Integer>
             return false;
         }
         return true;
+    }
+
+    public int getNextID()
+    {
+        return ++nextId;
     }
 
     public static CrateHandler getInstance()
