@@ -30,7 +30,7 @@ public class InteractListener implements Listener
                     else if (crate.getKnockback() > 0)
                     {
                         e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(-crate.getKnockback()));
-                        DesireCrates.getLangHandler().sendRenderMessage(e.getPlayer(), "need_key", true, false);
+                        DesireCrates.getLangHandler().sendRenderMessage(e.getPlayer(), "need_key", true, false, "{crate}", crate.getName());
                     }
                 }
                 else if (e.getAction() == Action.LEFT_CLICK_BLOCK)
