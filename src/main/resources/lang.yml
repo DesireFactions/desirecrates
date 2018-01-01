@@ -31,7 +31,7 @@ keys:
   claim: '&7You have claimed &a{amount} &b{crate} keys.'
 rewards:
   add: '&7Added reward &a{reward}&7 to crate &b{crate}&7.'
-  deleted: '&7Deleted reward &c{reward}&7.'
+  delete: '&7Deleted reward &c{reward}&7.'
   chance: '&7Set the chance for &a{reward}&7 in crate &b{crate} &7to &e{chance}&7.'
   editing: '&7You are now editing crate &b{crate}&7.'
   already_exists: '&7A reward by that name already exists.'
