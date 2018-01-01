@@ -15,6 +15,7 @@ public class CrateRewardsCommand extends ValidBaseCommand
         addSubCommand(new CrateRewardsAddCommand());
         addSubCommand(new CrateRewardsChanceCommand());
         addSubCommand(new CrateRewardsRemoveCommand());
+        addSubCommand(new CrateRewardsListCommand());
     }
 
 }

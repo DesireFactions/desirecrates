@@ -37,3 +37,5 @@ rewards:
   already_exists: '&7A reward by that name already exists.'
   not_editing: '&7Not editing a crate. Use /crate rewards edit [crate].'
   not_found: '&7Could not find a reward by that name.'
+  list_header: '&b&m------------&6[&b&lCrates&6]&b&m-----------'
+  list_item: '&6{name}&f: &b{type}'
