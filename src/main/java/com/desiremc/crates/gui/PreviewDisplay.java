@@ -1,8 +1,5 @@
 package com.desiremc.crates.gui;
 
-import org.bukkit.Bukkit;
-import org.bukkit.enchantments.Enchantment;
-
 import com.desiremc.core.gui.Menu;
 import com.desiremc.core.gui.MenuItem;
 import com.desiremc.crates.data.Crate;
@@ -26,10 +23,6 @@ public class PreviewDisplay extends Menu
         for (Reward reward : crate.getRewards())
         {
             addMenuItem(MenuItem.empty(reward.getItem()), index);
-            for (Enchantment ench : reward.getItem().getEnchantments().keySet())
-            {
-                Bukkit.broadcastMessage(ench.getName());
-            }
             index++;
         }
     }

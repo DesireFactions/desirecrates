@@ -40,7 +40,7 @@ public class CrateRewardsAddItemCommand extends ValidCommand
         addArgument(CommandArgumentBuilder.createBuilder(Double.class)
                 .setName("chance")
                 .setParser(new DoubleParser())
-                .addValidator(new NumberSizeValidator<Double>(0.0, 100.0))
+                .addValidator(new NumberSizeValidator<>(0.0, 100.0))
                 .build());
 
         addSenderValidator(new ItemInHandValidator());
