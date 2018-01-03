@@ -27,6 +27,9 @@ import org.mongodb.morphia.annotations.IndexOptions;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Transient;
 
+import com.desiremc.core.session.Achievement;
+import com.desiremc.core.session.Session;
+import com.desiremc.core.session.SessionHandler;
 import com.desiremc.core.utils.BukkitUtils;
 import com.desiremc.crates.DesireCrates;
 import com.desiremc.crates.data.Reward.RewardType;
@@ -480,6 +483,9 @@ public class Crate
         {
             return;
         }
+        Session session = SessionHandler.getOnlineSession(player.getUniqueId());
+        session.awardAchievement(Achievement.FIRST_CRATE, true);
+        session.save();
         if (firework)
         {
             // TODO spawn firework
