@@ -81,6 +81,9 @@ public class Crate
     @Transient
     private List<Location> parsedLocations;
 
+    @Transient
+    private Random random;
+
     public Crate()
     {
         hologramLines = new LinkedList<>();
@@ -241,7 +244,7 @@ public class Crate
     /**
      * Gets the stub of the crate. Usually this is the lowercase version of the name, however it does not necessarily
      * have to be.
-     * 
+     *
      * @return the stub of the crate.
      */
     public String getStub()
@@ -343,7 +346,7 @@ public class Crate
 
     /**
      * Adds a line to the holograms for the crates. This does not save to the database.
-     * 
+     *
      * @param line the text to add
      */
     public void addHologramLine(String line)
@@ -404,7 +407,7 @@ public class Crate
     /**
      * Add a new location to the Crate. This will also spawn in holograms and any other effects associated with this
      * crate.
-     * 
+     *
      * @param block the block for the new crate location.
      */
     public void addLocation(Block block)
@@ -437,7 +440,7 @@ public class Crate
     /**
      * Remove a location from the Crate. This will also despawn the holograms and any other effects associated with this
      * crate.
-     * 
+     *
      * @param block the block of the crate to be broken.
      */
     public void removeLocation(Block block)
@@ -460,7 +463,7 @@ public class Crate
 
     /**
      * This will generate the preview display if it had not been previously generated.
-     * 
+     *
      * @return the preview
      */
     public PreviewDisplay getPreviewDisplay()
@@ -473,15 +476,37 @@ public class Crate
 
     /**
      * Run the entire process of this crate being opened by the specified player.
-     * 
+     *
      * @param player the player opening the crate.
      */
     public void open(Player player)
     {
-        Reward reward = getRandomReward();
-        if (reward == null)
+        if (random == null)
         {
-            return;
+            random = new Random();
+        }
+
+        int randomNumber = random.nextInt(4 - 2) + 2;
+
+        for (int i = 0; i < randomNumber; i++)
+        {
+            Reward reward = getRandomReward();
+            if (reward == null)
+            {
+                continue;
+            }
+            if (reward.getType() == RewardType.COMMAND)
+            {
+                for (String str : reward.getCommands())
+                {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), str);
+                }
+            }
+            else
+            {
+                player.getInventory().addItem(reward.getItem());
+                player.updateInventory();
+            }
         }
         Session session = SessionHandler.getOnlineSession(player.getUniqueId());
         session.awardAchievement(Achievement.FIRST_CRATE, true);
@@ -495,18 +520,7 @@ public class Crate
             // TODO broadcast message
             Bukkit.broadcastMessage("Yaaaay he won");
         }
-        if (reward.getType() == RewardType.COMMAND)
-        {
-            for (String str : reward.getCommands())
-            {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), str);
-            }
-        }
-        else
-        {
-            player.getInventory().addItem(reward.getItem());
-            player.updateInventory();
-        }
+
         ItemStack item = player.getItemInHand();
         if (item != null)
         {
@@ -524,7 +538,7 @@ public class Crate
 
     /**
      * Goes through all the rewards and randomly picks one based on the given percentages.
-     * 
+     *
      * @return the random reward.
      */
     private Reward getRandomReward()
@@ -550,8 +564,8 @@ public class Crate
      * Give keys to a player to be claimed whenever the player wants to. This allows for players to get keys when they
      * are offline without them losing it, as well as ensuring we don't have to make sure they have an empty slot in
      * their inventory.
-     * 
-     * @param uuid the player to give the keys to.
+     *
+     * @param uuid   the player to give the keys to.
      * @param amount the amount of keys.
      */
     public void addPendingKeys(UUID uuid, int amount)
@@ -569,7 +583,7 @@ public class Crate
 
     /**
      * Gets how many keys a player has. If the player has none, it returns null.
-     * 
+     *
      * @param uuid the player to check.
      * @return the amount of pending keys the player has.
      */
@@ -589,7 +603,7 @@ public class Crate
     /**
      * Clear the pending keys of a particular player. This should only be used after a player claims the keys for this
      * crate.
-     * 
+     *
      * @param uuid the player to clear.
      */
     public void clearPendingKeys(UUID uuid)
@@ -611,7 +625,7 @@ public class Crate
 
     /**
      * How many times this crate has been used by all players. This may be changed in the future to be per player.
-     * 
+     *
      * @return uses
      */
     public int getUses()
